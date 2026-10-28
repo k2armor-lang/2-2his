@@ -1,0 +1,20 @@
+# 운영체제가 만드는 파일
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 편집기 설정
+.vscode/
+.idea/
+
+# 임시 파일
+*.tmp
+*.log
+
+# 수업용 원본 문서 — 배포 주소로 공개되지 않도록 저장소에 넣지 않습니다
+# (맨 앞 /는 최상단 폴더만 가리킵니다. test/sample-result.pdf는 그대로 올라갑니다)
+/*.hwp
+/*.pdf
+
+# 안내 영상 — 저장소에 올리지 않습니다
+/*.mp4

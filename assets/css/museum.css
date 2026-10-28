@@ -1,0 +1,220 @@
+/* index.html 전용 전시 디자인. screen 전용으로 PDF 도록 스타일과 분리한다. */
+.museum {
+  --c-bg: #faf9f6; --c-bg-deep: #eeece6; --c-surface: #fff;
+  --c-surface-2: #efede7; --c-inset: #f7f5ef;
+  --c-line: #cfcbc2; --c-line-soft: #e2ded6;
+  --c-text: #242522; --c-text-dim: #595a54; --c-text-mute: #707168;
+  --c-gold: #9b3e2c; --c-gold-soft: #793021; --c-gold-line: #b99281;
+  --c-ink: #fff; --c-warn: #b32e22;
+  --c-glow-wash: #9b3e2c05; --c-glow-soft: #9b3e2c0c;
+  --c-glow: #9b3e2c22; --c-glow-line: #b38a7a;
+  --sh-card: none; --sh-btn: none; --sh-btn-lift: none; --sh-btn-press: none;
+  --radius: 2px; --radius-sm: 2px; --w-max: 1320px;
+  --pad-x: clamp(22px, 5vw, 72px); font-size: 16px;
+}
+.museum .site-header { background: #faf9f6f5; backdrop-filter: blur(12px); border-color: var(--c-line-soft); }
+.museum .visitor-bar { background: #eeece6; border: 0; }
+.museum .visitor-bar-inner { min-height: 44px; gap: 8px 14px; }
+.museum .visitor-label { padding: 0; background: none; color: var(--c-text-mute); font-weight: 400; }
+.museum .visitor-info { font-size: 13px; }
+.museum .visitor-edit, .museum .visitor-logout { background: transparent; border-color: transparent; color: var(--c-text-dim); box-shadow: none; font-size: 12px; font-weight: 500; }
+.museum .visitor-edit:hover, .museum .visitor-logout:hover { background: #e2dfd7; color: var(--c-text); }
+.museum .visitor-pdf { background: #292b28; border-color: #292b28; min-height: 32px; padding: 5px 13px; border-radius: 2px; font-size: 12px; font-weight: 500; }
+.museum .visitor-pdf:hover { background: var(--c-gold); border-color: var(--c-gold); }
+.museum .header-inner { min-height: 84px; }
+.museum .brand { font-family: var(--f-sans); font-size: 18px; font-weight: 700; letter-spacing: -.05em; align-items: center; gap: 12px; }
+.museum .brand .brand-mark { display: grid; place-items: center; width: 32px; height: 36px; border: 1px solid var(--c-gold); color: var(--c-gold); font: 500 25px/1 var(--f-serif); }
+.museum .nav-list a { font-size: 14px; padding-inline: 14px; border-radius: 0; }
+.museum .nav-list a[aria-current] { background: none; color: var(--c-text); box-shadow: inset 0 -2px var(--c-gold); }
+.museum .nav-list a:hover { background: #eeece6; }
+/* 전시 포스터: 큰 명조 제목과 한지 콜라주, 한 가지 주홍색 포인트 */
+.museum .hero.is-compact { padding: 44px 0 0; background: #ece8de; border: 0; }
+.hero-layout { display: grid; grid-template-columns: 1.05fr 1fr; gap: 0 60px; align-items: center; }
+.hero-copy { padding-block: 20px 34px; }
+.museum .hero-period { margin-bottom: 30px; }
+.museum .tag-badge { padding: 0; border: 0; border-radius: 0; background: none; color: #675f53; font-size: 12px; font-weight: 500; letter-spacing: .025em; white-space: normal; }
+.hero-kicker { color: #6c4739; font-size: 15px; margin-bottom: 18px; letter-spacing: .02em; }
+.museum .hero.is-compact .hero-title { font-size: clamp(42px, 5.1vw, 68px); line-height: 1.36; letter-spacing: -.065em; margin-bottom: 28px; font-weight: 600; }
+.museum .hero-title span { color: #292a25; font-size: .8em; white-space: nowrap; }
+.museum .hero.is-compact .hero-desc { color: #666258; font-size: 15px; line-height: 1.9; max-width: 390px; }
+.hero-link { display: inline-flex; align-items: center; gap: 44px; padding: 12px 0 10px; margin-top: 24px; border-bottom: 1px solid var(--c-text); color: var(--c-text); font-size: 14px; font-weight: 600; }
+.hero-link:hover { color: var(--c-gold); border-color: currentColor; }
+.hero-art { margin: 0; position: relative; align-self: stretch; min-width: 0; }
+.hero-art img { width: 100%; height: 100%; max-height: 485px; object-fit: cover; }
+.hero-art figcaption { display: flex; justify-content: space-between; gap: 12px; position: absolute; bottom: 0; left: 0; right: 0; padding: 11px 14px; background: #25251fe6; color: #ede9df; font-size: 11px; letter-spacing: .03em; }
+.hero-edition { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 16px; margin-top: 32px; padding: 15px 0; border-top: 1px solid #c7c0b3; font-size: 12px; color: #70695d; }
+/* 기획 안내는 카드가 아닌 간결한 도록 목차로 */
+.museum .section.is-tight { padding: 44px 0; }
+.museum .section + .section { border: 0; }
+.museum .section-head.is-row { align-items: end; padding: 0; margin-bottom: 26px; border: 0; }
+.section-index { display: block; color: var(--c-gold); font: 500 11px/1.5 var(--f-sans); letter-spacing: .1em; margin-bottom: 10px; }
+.museum .section-head.is-row .section-title { font-size: 26px; letter-spacing: -.04em; font-weight: 600; }
+.museum .section-note { font-size: 13px; }
+.museum #guide { padding-bottom: 30px; }
+.museum .flow { gap: 0; border-top: 1px solid var(--c-line); border-bottom: 1px solid var(--c-line); padding: 23px 0; }
+.museum .flow-step { padding: 0 22px; background: none; border: 0; border-radius: 0; gap: 10px; }
+.museum .flow-step:first-child { padding-left: 0; }
+.museum .flow-step:last-child { padding-right: 0; }
+.museum .flow-step + .flow-step { border-left: 1px solid var(--c-line-soft); }
+.museum .flow-step::before, .museum .flow-step::after { display: none; }
+.museum .flow-title { font-size: 16px; font-weight: 600; gap: 10px; }
+.museum .flow-no { display: inline; width: auto; height: auto; border-radius: 0; background: none; color: #9b3e2c; font: 400 20px/1.4 Georgia, serif; }
+.museum .flow-text { font-size: 14px; color: var(--c-text-dim); }
+.museum .flow-text strong { font-weight: 500; color: inherit; }
+.museum .flow-sum { padding: 14px 0 0; margin: 0; border: 0; background: none; border-radius: 0; gap: 8px 18px; }
+.museum .flow-sum-label, .museum .flow-chips li, .museum .flow-sum-note { font-size: 12px; }
+.museum .flow-chips { gap: 6px 16px; }
+.museum .flow-sum-note { flex: 1 1 260px; text-align: right; }
+/* 시대별 전시 포스터. 사진처럼 보이는 역사 자료 대신 추상적인 타이포그래피를 쓴다. */
+.museum #rooms { padding-top: 28px; padding-bottom: 64px; }
+.museum .room-grid { gap: 28px; }
+.museum .theme-room1, .museum .theme-room2, .museum .theme-room3 {
+  --c-surface: #fff; --c-surface-2: #efede7; --c-inset: #f7f5ef;
+  --c-line: #cfcbc2; --c-line-soft: #e2ded6;
+}
+.museum .theme-room1 { --c-gold: #495744; --c-gold-soft: #303c2c; --c-gold-line: #9ba590; --c-glow-soft: #e9ece3; --c-glow: #d0d7c8; --c-glow-line: #91a083; --c-frame: #edeee8; --c-frame-line: #cdd2c3; --poster: #333e34; --poster-ink: #ece2cd; }
+.museum .theme-room2 { --c-gold: #984a32; --c-gold-soft: #753622; --c-gold-line: #bba08a; --c-glow-soft: #f2e9df; --c-glow: #e0cfbd; --c-glow-line: #b39274; --c-frame: #f2eee6; --c-frame-line: #ded3c3; --poster: #93472e; --poster-ink: #f4e7d2; }
+.museum .theme-room3 { --c-gold: #3e505c; --c-gold-soft: #2b3b46; --c-gold-line: #98a5ab; --c-glow-soft: #e7ecee; --c-glow: #cbd4d8; --c-glow-line: #8a9da7; --c-frame: #eaeef0; --c-frame-line: #ced7da; --poster: #303f4a; --poster-ink: #e9e5d9; }
+.museum .room-card { padding: 0 0 16px; min-height: 0; background: transparent; border: 0; border-bottom: 1px solid var(--c-line); border-radius: 0; box-shadow: none; overflow: visible; }
+.museum .room-card::before { display: none; }
+.room-poster { position: relative; height: 222px; padding: 20px 24px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; background: var(--poster); color: var(--poster-ink); margin-bottom: 22px; isolation: isolate; }
+.room-poster::before { content: ''; position: absolute; z-index: -1; right: -60px; top: 30px; width: 215px; height: 215px; border: 1px solid #ffffff28; border-radius: 50%; }
+.room-poster::after { content: ''; position: absolute; z-index: -1; width: 65%; height: 100%; right: -35%; top: 0; background: #ffffff07; transform: skewX(-24deg); }
+.room-poster > span { font-size: 11px; letter-spacing: .15em; }
+.room-poster b { font: 600 64px/1.25 var(--f-serif); letter-spacing: .08em; }
+.room-poster small { font-size: 11px; letter-spacing: .035em; }
+.museum .room-card-top { min-height: 24px; margin: 0 0 12px; align-items: center; }
+.museum .room-no { display: inline-flex; align-items: center; gap: 8px; margin: 0; font: 400 22px/1 Georgia, serif; color: var(--c-gold); }
+.museum .room-selection { display: none; font: 600 clamp(12px, 1.1vw, 14px)/1.4 var(--f-sans); color: var(--c-gold); white-space: nowrap; }
+.museum .room-card.is-chosen .room-selection { display: inline-flex; }
+.museum .room-status { margin: 0; padding: 0; background: none; color: var(--c-gold); font-size: 12px; }
+.museum .room-years { color: var(--c-text-mute); font-size: 12px; letter-spacing: .05em; margin-bottom: 10px; }
+.museum .room-name { font-size: clamp(21px, 2vw, 25px); font-weight: 600; line-height: 1.6; margin-bottom: 14px; }
+.museum .room-summary { font-size: 14px; line-height: 1.8; margin-bottom: 22px; }
+.museum .room-enter { padding: 12px 0 0; min-height: 44px; border: 0; border-top: 1px solid var(--c-line-soft); border-radius: 0; justify-content: space-between; background: none; color: var(--c-gold); font-size: 14px; box-shadow: none; }
+.museum .room-card:hover, .museum .room-card:focus-visible { transform: translateY(-3px); background: transparent; border-color: var(--c-gold); box-shadow: none; }
+.museum .room-card:hover .room-enter, .museum .room-card:focus-visible .room-enter { background: none; color: var(--c-gold); box-shadow: none; }
+.museum .room-card.is-chosen,
+.museum .room-card.is-chosen:hover,
+.museum .room-card.is-chosen:focus-visible { background: transparent; box-shadow: none; }
+.museum .room-card.is-locked { opacity: .58; }
+.museum .room-card.is-locked .room-enter { color: var(--c-text-mute); }
+.museum .room-confirm { width: min(440px, calc(100vw - 40px)); max-height: calc(100dvh - 40px); margin: auto; padding: 30px; border: 1px solid #e2ded6; border-radius: 18px; background: #fffdf9; color: var(--c-text); box-shadow: 0 24px 80px #24252230; }
+.museum .room-confirm::backdrop { background: #24252265; backdrop-filter: blur(3px); }
+.museum .room-confirm h2 { margin-bottom: 18px; font: 600 24px/1.5 var(--f-serif); }
+.museum .room-confirm-name { padding: 16px 18px; border-radius: 10px; background: var(--c-glow-soft); color: var(--c-gold-soft); font-size: 17px; font-weight: 600; line-height: 1.7; }
+.museum .room-confirm-note { margin-top: 12px; color: var(--c-text-mute); font-size: 14px; line-height: 1.65; }
+.museum .room-confirm-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.museum .room-confirm-actions .btn { flex: 1; min-height: 48px; padding: 10px 12px; border-radius: 10px; font-size: 16px; white-space: nowrap; }
+.museum .room-confirm-actions .btn:not(.btn-primary) { background: #f1efe9; border-color: transparent; color: var(--c-text-dim); }
+.museum #export { border-top: 1px solid var(--c-line); background: #efede6; padding: 36px 0 42px; }
+.museum .submit-title { font-size: 25px; font-weight: 600; margin-bottom: 20px; padding-bottom: 0; border: 0; }
+.museum .submit-box { padding: 0; background: none; border: 0; box-shadow: none; }
+.museum .submit-note { font-size: 14px; }
+.museum .site-footer { background: var(--c-bg); padding: 28px 0; border-color: var(--c-line); }
+.museum .footer-brand { font-family: var(--f-sans); font-size: 13px; font-weight: 500; }
+.museum .footer-copyright { font-size: 11px; }
+/* 작성 화면: 작품을 놓는 밝은 전시 벽과 단정한 라벨 */
+.museum .room-section { background: var(--c-bg); padding-top: 24px; }
+.museum .room-section::before { background: var(--c-gold); height: 2px; }
+.museum .room-head { max-width: none; padding: 28px 0 32px; margin-bottom: 28px; }
+.museum .room-heading { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.55; font-weight: 600; }
+.museum .room-head .lead { max-width: 760px; font-size: 16px; }
+.museum .room-switch-home, .museum .room-move { background: transparent; box-shadow: none; }
+.museum .room-switch-home:hover, .museum .room-move:hover { background: var(--c-glow-soft); color: var(--c-gold); }
+.museum .room-switch-list .is-current { border: 0; border-radius: 0; font-size: 13px; }
+.museum .room-reason { max-width: none; padding: 24px; border: 1px solid var(--c-line); border-left: 3px solid var(--c-gold); border-radius: 0; background: var(--c-surface); }
+.museum .artifact-grid { max-width: none; }
+.museum .artifact-card { padding: 26px; border-color: var(--c-line); border-radius: 0; }
+.museum .card-toggle { background: transparent; border-color: transparent; padding-left: 0; box-shadow: none; color: var(--c-gold); }
+.museum .card-toggle:hover { background: var(--c-glow-soft); color: var(--c-gold); }
+.museum .card-toggle:hover .card-toggle-label { color: var(--c-gold); }
+.museum .card-toggle:hover .card-toggle-icon { background: var(--c-gold); color: #fff; }
+.museum .card-remove { background: transparent; border: 0; color: var(--c-text-mute); box-shadow: none; }
+.museum .card-remove:hover { background: #f6e4de; color: #9a3527; }
+.museum .artifact-frame { padding: 10px; border: 0; border-radius: 0; }
+.museum .artifact-mat { padding: 0; background: transparent; }
+.museum .dropzone { border-width: 1px; border-radius: 0; background: var(--c-inset); }
+.museum .dz-guide .dz-icon { width: 44px; height: 44px; background: var(--c-glow-soft); color: var(--c-gold); box-shadow: none; border-radius: 0; }
+.museum .field-label { font-size: 15px; font-weight: 600; }
+.museum .field-input { font-size: 16px; border-radius: 2px; background: #fff; }
+.museum .field-input:focus { background: #fff; }
+.museum .photo-remove { background: #fff; color: var(--c-text); }
+.museum .toolbar-hint-icon { border: 0; padding: 0; color: var(--c-text-mute); background: none; }
+/* 입장 화면은 전시 초대장처럼 */
+.museum .gate { background: #e9e5dc; backdrop-filter: none; }
+.museum .gate::before { inset: 0; height: 100%; background: url('../images/exhibition-paper.png') center / cover; opacity: .16; }
+.museum .gate-card { width: min(500px, 100%); border: 1px solid #cfc8ba; border-top: 3px solid var(--c-gold); border-radius: 0; box-shadow: 0 20px 60px #28251f10; }
+.museum .gate-brand { font-family: var(--f-sans); font-size: 12px; font-weight: 500; line-height: 1.8; margin-bottom: 24px; }
+.museum .gate-title { font-weight: 600; font-size: clamp(24px, 3.4vw, 30px); line-height: 1.6; }
+.museum .gate-assign { padding: 0; border: 0; border-radius: 0; background: none; font-size: 14px; }
+.museum .gate-input { background: #fff; border-radius: 2px; }
+.museum .gate-note { font-size: 12px; line-height: 1.85; }
+.museum .gate .eyebrow { font-size: 11px; letter-spacing: .16em; }
+@media (max-width: 1050px) {
+  .hero-layout { gap: 0 32px; }
+  .museum .hero.is-compact .hero-title { font-size: 50px; }
+  .museum .flow-step { padding-inline: 16px; }
+  .museum .flow-title { font-size: 14px; gap: 8px; }
+  .museum .room-grid { gap: 20px; }
+}
+@media (max-width: 900px) {
+  .museum .hero.is-compact { padding-top: 28px; }
+  .hero-layout { grid-template-columns: 1.1fr .9fr; gap: 0 24px; }
+  .museum .hero.is-compact .hero-title { font-size: 42px; }
+  .museum .hero-period { margin-bottom: 22px; }
+  .hero-art img { min-height: 390px; }
+  .hero-art figcaption { flex-direction: column; gap: 2px; }
+  .museum .flow { gap: 22px 0; }
+  .museum .flow-step:nth-child(3) { border-left: 0; padding-left: 0; }
+  .museum .flow-title { font-size: 16px; }
+  .museum .flow-sum-note { text-align: left; }
+  .museum .room-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .museum .room-card:last-child { grid-column: auto; }
+  .room-poster { height: 190px; padding: 16px; }
+  .room-poster b { font-size: 48px; }
+  .room-poster small { font-size: 10px; }
+  .museum .room-name { font-size: 20px; }
+  .museum .room-summary, .museum .room-enter { font-size: 13px; }
+}
+@media (max-width: 700px) {
+  .museum .hero.is-compact { padding-top: 26px; }
+  .hero-layout { grid-template-columns: 1fr; gap: 0; }
+  .hero-copy { padding: 0 0 28px; }
+  .museum .hero.is-compact .hero-title { font-size: 48px; }
+  .museum .hero-title span { font-size: .73em; }
+  .museum .hero-period { margin-bottom: 20px; }
+  .hero-art { height: 225px; }
+  .hero-art img { height: 100%; min-height: 0; object-position: center 65%; }
+  .hero-art figcaption { flex-direction: row; }
+  .hero-edition { margin-top: 24px; font-size: 10px; }
+  .museum .header-inner { min-height: 66px; }
+  .museum .brand { font-size: 15px; gap: 9px; }
+  .museum .brand .brand-mark { width: 27px; height: 30px; font-size: 21px; }
+  .museum .visitor-bar-inner { gap: 4px 8px; padding-block: 8px; flex-wrap: wrap; }
+  .museum .visitor-info { flex: 1 1 50%; font-size: 12px; }
+  .museum .visitor-edit, .museum .visitor-logout, .museum .visitor-pdf { min-height: 36px; }
+  .museum .section.is-tight { padding-block: 30px; }
+  .museum .section-head.is-row .section-title, .museum .submit-title { font-size: 22px; }
+  .museum .section-head.is-row .section-note { text-align: left; flex-basis: 100%; }
+  .museum .flow { grid-template-columns: 1fr 1fr; }
+  .museum .flow-step { padding-inline: 14px; }
+  .museum .flow-title { font-size: 14px; align-items: baseline; }
+  .museum .flow-text { font-size: 13px; }
+  .museum .flow-sum { gap: 10px; }
+  .museum .flow-chips { gap: 6px 12px; }
+  .museum .room-grid { grid-template-columns: 1fr; gap: 32px; }
+  .room-poster { height: 230px; padding: 22px; }
+  .room-poster b { font-size: 64px; }
+  .room-poster small { font-size: 12px; }
+  .museum .room-name { font-size: 26px; }
+  .museum .room-summary { font-size: 15px; }
+  .museum .room-enter { font-size: 15px; min-height: 48px; }
+  .museum .room-head { padding-top: 4px; }
+  .museum .room-reason, .museum .artifact-card { padding: 18px; }
+  .museum .room-foot .btn { width: 100%; justify-content: center; }
+  .museum .section[id], .museum .hero[id] { scroll-margin-top: 164px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .museum .room-card:hover, .museum .room-card:focus-visible { transform: none; }
+}

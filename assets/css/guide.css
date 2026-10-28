@@ -1,0 +1,56 @@
+/* 사용 안내 화면. 전시관의 종이·먹색·주홍색을 이어 쓰며 인쇄는 style.css에 맡긴다. */
+.museum.guide-page { font-size: 17px; }
+.museum.guide-page .wrap { max-width: 1120px; }
+.museum.guide-page .brand { min-height: 48px; font-size: 18px; }
+.museum.guide-page .nav-list a { min-height: 48px; font-size: 16px; }
+.museum.guide-page .nav-toggle { min-width: 48px; min-height: 48px; }
+.museum.guide-page .guide-hero { padding: 54px 0 36px; background: #ece8de; border-bottom: 1px solid var(--c-line); }
+.museum.guide-page .guide-hero::before { display: none; }
+.museum.guide-page .hero-period { margin: 0 0 20px; font-size: 16px; color: #6c4739; letter-spacing: .03em; }
+.museum.guide-page .hero-title { margin: 0 0 22px; font-size: clamp(34px, 4.5vw, 52px); line-height: 1.45; font-weight: 600; letter-spacing: -.045em; }
+.museum.guide-page .hero-title .accent { color: var(--c-gold); font-size: 1em; white-space: normal; }
+.museum.guide-page .hero-desc { max-width: 740px; font-size: 17px; line-height: 1.85; color: var(--c-text-dim); }
+.museum.guide-page .guide-goal { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 28px; padding-top: 20px; border-top: 1px solid #c7c0b3; font-size: 16px; color: #524c41; }
+.museum.guide-page .guide-goal strong { font-weight: 500; }
+.museum.guide-page .guide-goal > span { color: #978e7e; }
+.museum.guide-page .guide-steps { padding: 46px 0 0; }
+.museum.guide-page .section-head { margin-bottom: 26px; padding: 0; border: 0; }
+.museum.guide-page .eyebrow { font-size: 16px; letter-spacing: .02em; color: var(--c-gold); }
+.museum.guide-page .section-title { font-size: 28px; font-weight: 600; letter-spacing: -.035em; }
+.museum.guide-page .step-list { border-color: var(--c-line); }
+.museum.guide-page .step { grid-template-columns: 64px minmax(0, 1fr); gap: 0 28px; padding: 30px 0; border-color: var(--c-line); }
+.museum.guide-page .step-no { font: 400 34px/1.35 Georgia, serif; color: var(--c-gold); }
+.museum.guide-page .step h3 { margin: 0 0 12px; font-size: 22px; font-weight: 600; line-height: 1.55; letter-spacing: -.025em; }
+.museum.guide-page .step p { max-width: 800px; font-size: 17px; line-height: 1.85; overflow-wrap: break-word; word-break: keep-all; }
+.museum.guide-page .step p + p { margin-top: 12px; }
+.museum.guide-page .step .tip { margin-top: 16px; padding: 12px 16px; border-left: 2px solid var(--c-gold-line); background: #eeece6; color: var(--c-text-dim); font-size: 16px; line-height: 1.8; }
+.museum.guide-page .guide-finish { padding: 38px 0 48px; }
+.museum.guide-page .guide-finish-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+.museum.guide-page .callout { min-width: 0; padding: 24px; border: 1px solid var(--c-line); border-radius: 0; background: transparent; }
+.museum.guide-page .callout h2 { margin-bottom: 16px; font: 600 22px/1.5 var(--f-serif); letter-spacing: -.02em; }
+.museum.guide-page .callout p, .museum.guide-page .callout li { font-size: 16px; line-height: 1.85; color: var(--c-text-dim); overflow-wrap: break-word; word-break: keep-all; }
+.museum.guide-page .callout p + p { margin-top: 12px; }
+.museum.guide-page .guide-checklist { border-top: 2px solid var(--c-gold); }
+.museum.guide-page .guide-care { background: #eeece6; }
+.museum.guide-page .footer-brand, .museum.guide-page .footer-copyright { font-size: 16px; line-height: 1.7; }
+@media (max-width: 900px) {
+  .museum.guide-page .header-inner { min-height: 72px; }
+  .museum.guide-page .guide-hero { padding-top: 36px; }
+  .museum.guide-page .guide-finish-grid { grid-template-columns: 1fr; gap: 20px; }
+}
+@media (max-width: 600px) {
+  .museum.guide-page .wrap { padding-inline: max(22px, env(safe-area-inset-left)) max(22px, env(safe-area-inset-right)); }
+  .museum.guide-page .brand { font-size: 16px; gap: 9px; }
+  .museum.guide-page .hero-title { font-size: 34px; }
+  .museum.guide-page .hero-period { font-size: 16px; }
+  .museum.guide-page .guide-goal { gap: 8px 12px; }
+  .museum.guide-page .guide-steps { padding-top: 32px; }
+  .museum.guide-page .section-title { font-size: 25px; }
+  .museum.guide-page .step { grid-template-columns: 36px minmax(0, 1fr); gap: 0 12px; padding-block: 24px; }
+  .museum.guide-page .step-no { font-size: 26px; }
+  .museum.guide-page .step h3 { font-size: 21px; }
+  .museum.guide-page .step .tip { padding: 12px; }
+  .museum.guide-page .guide-finish { padding-block: 28px 36px; }
+  .museum.guide-page .callout { padding: 20px; }
+  .museum.guide-page .footer-inner { align-items: flex-start; }
+}

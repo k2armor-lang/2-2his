@@ -1,0 +1,2218 @@
+/* =========================================================
+   기억의 전시관 — 공통 스타일시트
+   Theme: 어두운 전시장 벽 + 시대별 색 포인트
+          전시실 안에서는 그 시대의 색으로 갈아입는다 (6-2 참고)
+
+   지키는 규칙 세 가지
+   1) 누르는 것만 면을 채운다
+      1순위(.btn/.btn-primary/.room-enter) = 색으로 꽉 채움 + 그림자
+      2순위(.btn-ghost/.room-move/.card-toggle 등) = 면 + 테두리
+      누르지 않는 라벨(.tag-badge/.flow-chips/.room-status/.toolbar-hint)
+        = 면도 테두리도 그림자도 주지 않는다
+   2) 글자는 한 가지 산세리프(Pretendard)로 통일하고,
+      세리프는 큰 제목에만 남긴다. 작은 글씨는 14px 아래로 내리지 않는다.
+   3) 장식(무늬·그라데이션·조명)은 내용을 가리지 않을 만큼만 남긴다.
+   ========================================================= */
+
+/* ---------- 1. 디자인 토큰 ---------- */
+:root {
+  /* 색상 — 면은 세 단계로만 나눈다 (벽 / 카드 / 카드 위에 얹는 것) */
+  --c-bg:          #14171d;   /* 전시장 벽면(기본 배경) */
+  --c-bg-deep:     #101319;   /* 푸터 등 한 단 가라앉은 면 */
+  --c-surface:     #1d222a;   /* 카드 표면 */
+  --c-surface-2:   #272d37;   /* 카드 hover / 보조 표면 */
+  --c-inset:       #171b22;   /* 입력칸 · 액자 안쪽처럼 파인 면 */
+  --c-line:        #333a46;   /* 구분선 */
+  --c-line-soft:   #262c36;   /* 아주 옅은 구분선 */
+  --c-text:        #f5f6f8;   /* 본문 */
+  --c-text-dim:    #bcc2cc;   /* 보조 텍스트 */
+  --c-text-mute:   #8d95a2;   /* 안내문 · 입력 도움말 */
+  --c-gold:        #e0b649;   /* 포인트 금색 */
+  --c-gold-soft:   #f0cd74;   /* 밝은 금색(호버) */
+  --c-gold-line:   #6a5c33;   /* 금색 계열 테두리 */
+  --c-ink:         #14171d;   /* 포인트색 바탕 위에 얹는 글자색 */
+  --c-warn:        #f08a6d;   /* 오류 안내 */
+
+  /* 포인트색을 옅게 깐 값 — 전시실마다 아래 6-2에서 갈아끼운다 */
+  --c-glow-wash:   rgba(224, 182, 73, 0.05);   /* 구획 바탕 조명 */
+  --c-glow-soft:   rgba(224, 182, 73, 0.10);   /* 보조 버튼 · 박스 바탕 */
+  --c-glow:        rgba(224, 182, 73, 0.20);   /* 테두리 · 포커스 링 */
+  --c-glow-line:   rgba(224, 182, 73, 0.42);   /* 또렷한 테두리 */
+
+  /* 그림자 — 카드는 얕게 깔고, '누르는 것'만 확실히 띄운다 */
+  --sh-card:       0 1px 2px rgba(0, 0, 0, 0.20), 0 8px 24px rgba(0, 0, 0, 0.22);
+  --sh-pop:        0 24px 60px rgba(0, 0, 0, 0.50);
+  --sh-btn:        0 1px 2px rgba(0, 0, 0, 0.30), 0 6px 16px rgba(0, 0, 0, 0.32);
+  --sh-btn-lift:   0 2px 4px rgba(0, 0, 0, 0.30), 0 12px 26px rgba(0, 0, 0, 0.38);
+  --sh-btn-press:  0 1px 2px rgba(0, 0, 0, 0.30);
+
+  /* 액자(프레임) — 무늬를 걷어내고 단색 면으로 단순화한다 */
+  --c-frame:       var(--c-surface-2);
+  --c-frame-line:  var(--c-line);
+  --c-pattern:     none;
+
+  /* 타이포 — 화면 글자는 한 가지 산세리프로 통일하고,
+     세리프는 큰 제목(전시관의 얼굴)에만 남긴다 */
+  --f-sans:  "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+             "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --f-serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, serif;
+
+  /* 레이아웃 */
+  --w-max: 1180px;
+  --pad-x: clamp(20px, 5vw, 64px);
+  --radius: 14px;
+  --radius-sm: 10px;
+
+  /* 모션 */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---------- 2. 리셋 ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--f-sans);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.72;
+  letter-spacing: -0.005em;
+  word-break: keep-all;   /* 한글 어절 단위 줄바꿈 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* 태블릿(터치) 대응 — 가로 모드 전환 시 글자가 멋대로 커지지 않게,
+     탭할 때 파란 사각형이 번쩍이지 않게 */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 굵게 강조한 글자는 어디서든 최소한 밝은 흰색은 보장한다
+   (특정 문구를 더 강조하고 싶은 곳은 개별 규칙에서 금색으로 격상) */
+strong { color: var(--c-text); font-weight: 700; }
+
+/* 터치로 누르는 요소는 스크롤 제스처와 겹치지 않게 */
+button, .room-card, .dropzone, .nav-toggle { touch-action: manipulation; }
+
+img { max-width: 100%; display: block; }
+
+/* img { display:block } 이 UA의 [hidden] 규칙을 덮어쓰므로 다시 지정 */
+[hidden] { display: none !important; }
+
+a { color: inherit; text-decoration: none; }
+
+/* 제목은 기본적으로 본문과 같은 산세리프를 굵기로만 구분한다.
+   세리프는 아래 '큰 제목'에만 남겨 전시관다운 인상을 지킨다. */
+h1, h2, h3, h4 {
+  font-family: var(--f-sans);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.hero-title,
+.room-heading,
+.gate-title,
+.room-name,
+.brand,
+.footer-brand,
+.gate-brand {
+  font-family: var(--f-serif);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+p { margin: 0; }
+
+ul { margin: 0; padding: 0; list-style: none; }
+
+/* 키보드 포커스 표시 (접근성) — 실제로 누르는 요소에만 준다 */
+:focus-visible {
+  outline: 3px solid var(--c-gold);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* 화면을 옮길 때 스크린 리더가 읽도록 제목에 초점을 옮기지만,
+   제목은 누르는 요소가 아니므로 테두리는 그리지 않는다 */
+h1[tabindex="-1"],
+h2[tabindex="-1"],
+h1[tabindex="-1"]:focus,
+h2[tabindex="-1"]:focus,
+h1[tabindex="-1"]:focus-visible,
+h2[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+
+/* 건너뛰기 링크 */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 999;
+  background: var(--c-gold);
+  color: var(--c-ink);
+  padding: 10px 18px;
+  font-weight: 700;
+}
+.skip-link:focus { left: 12px; top: 12px; }
+
+/* ---------- 3. 공통 유틸 ---------- */
+.wrap {
+  width: 100%;
+  max-width: var(--w-max);
+  margin-inline: auto;
+  padding-inline: var(--pad-x);
+}
+
+/* 섹션 라벨 (— 소제목) — 자간을 줄여 읽기 쉽게 */
+.eyebrow {
+  font-family: var(--f-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--c-gold);
+  flex: none;
+}
+
+.section-title {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  margin-top: 18px;
+}
+
+.lead {
+  color: var(--c-text-dim);
+  font-size: clamp(1rem, 1.4vw, 1.08rem);
+  line-height: 1.75;
+  max-width: 62ch;
+}
+
+/* ---------- 4. 헤더 / 네비게이션 ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(20, 23, 29, 0.88);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border-bottom: 1px solid var(--c-line-soft);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 66px;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 1.06rem;
+  white-space: nowrap;
+}
+.brand .brand-mark { color: var(--c-gold); font-size: 1.1rem; }
+
+.nav-list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+/* 메뉴는 '탭'처럼 — 지금 위치만 채워서 표시하고 나머지는 담백하게 둔다 */
+.nav-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--c-text-dim);
+  border-radius: var(--radius-sm);
+  transition: color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.nav-list a:hover {
+  color: var(--c-text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nav-list a[aria-current] {
+  color: var(--c-gold);
+  font-weight: 700;
+  background: var(--c-glow-soft);
+}
+
+/* 모바일 토글 버튼 */
+.nav-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
+  color: var(--c-text);
+  cursor: pointer;
+  padding: 0;
+  place-items: center;
+  box-shadow: var(--sh-btn);
+}
+.nav-toggle:active { transform: translateY(1px); box-shadow: var(--sh-btn-press); }
+.nav-toggle span,
+.nav-toggle span::before,
+.nav-toggle span::after {
+  content: "";
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform 0.3s var(--ease), opacity 0.2s linear;
+}
+.nav-toggle span { position: relative; }
+.nav-toggle span::before { position: absolute; top: -6px; }
+.nav-toggle span::after  { position: absolute; top:  6px; }
+
+.nav-toggle[aria-expanded="true"] span { background: transparent; }
+.nav-toggle[aria-expanded="true"] span::before { transform: translateY(6px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span::after  { transform: translateY(-6px) rotate(-45deg); }
+
+/* ---------- 5. 히어로 ---------- */
+.hero {
+  position: relative;
+  padding: clamp(72px, 13vw, 150px) 0 clamp(56px, 9vw, 104px);
+  overflow: hidden;
+  border-bottom: 1px solid var(--c-line-soft);
+}
+/* 은은한 조명 효과 — 아주 옅게만 남긴다 */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -30% 20% auto -10%;
+  height: 120%;
+  background: radial-gradient(
+    ellipse at 30% 0%,
+    rgba(224, 182, 73, 0.07),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+.hero > * { position: relative; }
+
+.hero-period {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  color: var(--c-gold);
+  margin-bottom: 22px;
+}
+
+/* 수행평가 이름표 — '누르는 것'이 아니므로 채운 버튼처럼 보이지 않게 한다 */
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--c-glow-soft);
+  border: 1px solid var(--c-glow);
+  color: var(--c-gold);
+  font-family: var(--f-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.tag-note {
+  font-size: 0.82rem;
+  letter-spacing: 0;
+  color: var(--c-text-mute);
+}
+
+.hero-title {
+  font-size: clamp(2.1rem, 6.2vw, 4.1rem);
+  line-height: 1.22;
+  margin-bottom: 22px;
+}
+.hero-title .accent { color: var(--c-gold); }
+
+.hero-desc {
+  color: var(--c-text-dim);
+  font-size: clamp(1rem, 1.6vw, 1.12rem);
+  line-height: 1.75;
+  max-width: 56ch;
+  margin-bottom: 0;
+}
+
+/* 로비 타이틀 — 첫 화면에 방법·전시실까지 함께 들어오도록 낮게 잡는다 */
+.hero.is-compact {
+  padding: clamp(20px, 3.2vw, 38px) 0 clamp(18px, 2.6vw, 32px);
+}
+.hero.is-compact .hero-period { margin-bottom: 14px; font-size: 0.82rem; letter-spacing: 0; }
+.hero.is-compact .hero-title {
+  font-size: clamp(1.7rem, 3.8vw, 2.6rem);
+  line-height: 1.28;
+  margin-bottom: 14px;
+}
+.hero.is-compact .hero-desc {
+  font-size: clamp(0.95rem, 1.2vw, 1.04rem);
+  max-width: 66ch;
+}
+
+.rule {
+  width: 56px;
+  height: 2px;
+  background: var(--c-gold);
+  margin-bottom: 30px;
+}
+
+/* ---------- 6. 섹션 공통 ---------- */
+.section {
+  padding: clamp(56px, 9vw, 104px) 0;
+}
+.section + .section { border-top: 1px solid var(--c-line-soft); }
+
+.section-head { margin-bottom: clamp(34px, 5vw, 56px); }
+
+/* 로비처럼 여러 구획을 한 화면에 담아야 하는 곳 */
+.section.is-tight { padding: clamp(20px, 2.6vw, 34px) 0; }
+
+/* 라벨·제목·한 줄 설명을 한 줄로 눕힌 머리글 */
+.section-head.is-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  margin-bottom: clamp(16px, 2vw, 22px);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--c-line-soft);
+}
+.section-head.is-row .section-title {
+  margin-top: 0;
+  font-size: clamp(1.28rem, 2.2vw, 1.65rem);
+}
+/* 오른쪽 한 줄 설명 — 자리가 모자라면 잘리지 말고 아랫줄로 내려간다 */
+.section-head.is-row .section-note {
+  flex: 1 1 300px;
+  min-width: 0;
+  text-align: right;
+}
+.section-note {
+  font-size: 0.9rem;
+  color: var(--c-text-mute);
+}
+/* 문구 안에 끼워 넣는 작은 버튼 (예: '다른 전시실로 바꾸기') */
+.section-note-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+  padding: 8px 14px;
+  min-height: 38px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--c-text);
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--sh-btn);
+  cursor: pointer;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease),
+              color 0.2s var(--ease), box-shadow 0.15s var(--ease), transform 0.15s var(--ease);
+}
+.section-note-action:hover {
+  background: var(--c-gold);
+  border-color: var(--c-gold);
+  color: var(--c-ink);
+}
+.section-note-action:active {
+  transform: translateY(1px);
+  box-shadow: var(--sh-btn-press);
+}
+
+/* 메뉴로 이동했을 때 고정 헤더에 가리지 않도록 */
+.section[id],
+.hero[id] { scroll-margin-top: 118px; }
+
+/* ---------- 6-0. 화면 전환 (로비 ↔ 전시실) ----------
+   자바스크립트가 있을 때만 화면을 나눈다. 없으면 예전처럼 죽 이어서 보인다. */
+.has-js .view:not(.is-active) { display: none; }
+
+/* ---------- 6-1. 전시실 화면 ---------- */
+.room-section {
+  position: relative;
+  background:
+    radial-gradient(ellipse at 8% 0%, var(--c-glow-wash), transparent 55%);
+}
+/* 전시실 화면은 위쪽 이동 단추부터 시작하므로 여백을 조금 줄인다 */
+.room-section { padding-top: clamp(20px, 2.6vw, 30px); }
+
+/* 전시실 사이를 오가는 단추줄 */
+.room-switch {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-bottom: clamp(24px, 3.2vw, 34px);
+}
+
+/* ← 로비 : 실제로 누르는 버튼이므로 면을 채우고 그림자를 준다 */
+.room-switch-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 20px 10px 16px;
+  margin-right: auto;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--c-text);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-sm);
+  background: var(--c-surface-2);
+  box-shadow: var(--sh-btn);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease),
+              color 0.2s var(--ease), transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.room-switch-home:hover {
+  background: var(--c-gold);
+  border-color: var(--c-gold);
+  color: var(--c-ink);
+}
+.room-switch-home:active { transform: translateY(1px); box-shadow: var(--sh-btn-press); }
+
+/* 지금 어느 전시실에 있는지 알려 주는 '표시' — 누르는 것이 아니므로 담백하게 */
+.room-switch-list {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: none;
+}
+.room-switch-list a,
+.room-switch-list .is-current {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  color: var(--c-text-dim);
+  white-space: nowrap;
+  transition: color 0.25s var(--ease), background 0.25s var(--ease);
+}
+.room-switch-list a:hover { color: var(--c-text); }
+.room-switch-list a[aria-current],
+.room-switch-list .is-current {
+  background: var(--c-glow-soft);
+  border: 1px solid var(--c-glow);
+  color: var(--c-gold);
+  font-weight: 700;
+}
+
+/* 전시실 아래쪽 — 다음 차례로 넘어가는 줄 */
+.room-foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  margin-top: clamp(28px, 3.6vw, 40px);
+  padding-top: clamp(22px, 2.8vw, 30px);
+  border-top: 1px solid var(--c-line-soft);
+}
+/* 로비로 / 제출하러 가기 — 링크가 아니라 '누르는 칸'으로 보이게 */
+.room-move {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--c-text);
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--sh-btn);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease),
+              color 0.2s var(--ease), transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.room-move:hover {
+  background: var(--c-gold);
+  border-color: var(--c-gold);
+  color: var(--c-ink);
+}
+.room-move:active { transform: translateY(1px); box-shadow: var(--sh-btn-press); }
+.room-move-next {
+  color: var(--c-gold);
+  border-color: var(--c-glow-line);
+  background: var(--c-glow-soft);
+}
+.room-foot .btn { margin-left: auto; }
+.btn-sub {
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  opacity: 0.8;
+}
+
+/* 전시실에 들어섰다는 표시 — 구획 맨 위에 그 방의 색 띠를 두른다 */
+.room-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--c-gold), var(--c-glow-line) 38%, transparent 78%);
+  pointer-events: none;
+}
+
+.room-head {
+  max-width: 820px;
+  margin-bottom: clamp(30px, 4vw, 44px);
+  padding-bottom: clamp(24px, 3vw, 32px);
+  border-bottom: 1px solid var(--c-line-soft);
+}
+.room-heading {
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  line-height: 1.28;
+  margin: 16px 0 18px;
+}
+.room-heading .accent { color: var(--c-gold); }
+.room-head .lead { max-width: none; }
+
+/* =========================================================
+   6-2. 전시실별 테마
+   전시관 전체(헤더 · 히어로 · 입장 화면 · 도록)는 금색 정체성을 지키고,
+   전시실 안에서만 그 시대의 색으로 갈아입는다.
+   색 이름을 바꾸지 않고 값만 덮어써서, 안쪽 요소는 손대지 않아도 따라온다.
+   ========================================================= */
+
+/* --- 제1전시실 (1910—1945) 「빼앗긴 들에도 봄은 오는가」
+       먹빛 벽에 청자 옥빛. 억눌린 시대에도 지켜낸 우리 것의 빛. --- */
+.theme-room1 {
+  --c-gold:       #7fc9ac;
+  --c-gold-soft:  #a8dcc6;
+  --c-gold-line:  #46685b;
+  --c-glow-wash:  rgba(127, 201, 172, 0.05);
+  --c-glow-soft:  rgba(127, 201, 172, 0.11);
+  --c-glow:       rgba(127, 201, 172, 0.2);
+  --c-glow-line:  rgba(127, 201, 172, 0.42);
+  --c-surface:    #1a2226;
+  --c-surface-2:  #242f33;
+  --c-inset:      #161d21;
+  --c-line:       #33424a;
+  --c-line-soft:  #253036;
+  --c-frame:      var(--c-surface-2);
+  --c-frame-line: var(--c-line);
+  --c-pattern:    none;
+}
+
+/* --- 제2전시실 (1945—1960) 「광복, 그리고 다시 갈라진 땅」
+       해방의 횃불빛과 전쟁이 남긴 흙빛. --- */
+.theme-room2 {
+  --c-gold:       #e89464;
+  --c-gold-soft:  #f5b58e;
+  --c-gold-line:  #70503a;
+  --c-glow-wash:  rgba(232, 148, 100, 0.05);
+  --c-glow-soft:  rgba(232, 148, 100, 0.11);
+  --c-glow:       rgba(232, 148, 100, 0.2);
+  --c-glow-line:  rgba(232, 148, 100, 0.42);
+  --c-surface:    #241f1b;
+  --c-surface-2:  #302921;
+  --c-inset:      #1e1a16;
+  --c-line:       #453a30;
+  --c-line-soft:  #2f2821;
+  --c-frame:      var(--c-surface-2);
+  --c-frame-line: var(--c-line);
+  --c-pattern:    none;
+}
+
+/* --- 제3전시실 (1960—현재) 「산업화와 민주화, 오늘의 우리」
+       강철빛 위로 밝아 오는 새벽 하늘빛. --- */
+.theme-room3 {
+  --c-gold:       #78b4ea;
+  --c-gold-soft:  #a5d0f5;
+  --c-gold-line:  #3f5a74;
+  --c-glow-wash:  rgba(120, 180, 234, 0.05);
+  --c-glow-soft:  rgba(120, 180, 234, 0.11);
+  --c-glow:       rgba(120, 180, 234, 0.2);
+  --c-glow-line:  rgba(120, 180, 234, 0.42);
+  --c-surface:    #1b222c;
+  --c-surface-2:  #252e3a;
+  --c-inset:      #171d26;
+  --c-line:       #334053;
+  --c-line-soft:  #242d3a;
+  --c-frame:      var(--c-surface-2);
+  --c-frame-line: var(--c-line);
+  --c-pattern:    none;
+}
+
+/* ---------- 7. 전시실 카드 ---------- */
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(18px, 2.2vw, 28px);
+}
+
+.room-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius);
+  box-shadow: var(--sh-card);
+  padding: clamp(22px, 2.4vw, 28px);
+  min-height: 246px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s var(--ease),
+              border-color 0.3s var(--ease),
+              box-shadow 0.3s var(--ease),
+              background 0.3s var(--ease);
+}
+/* 카드 맨 위의 색 띠 — 어느 시대의 방인지 색으로 먼저 알린다 */
+.room-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--c-gold);
+}
+.room-card:hover,
+.room-card:focus-visible {
+  transform: translateY(-4px);
+  background: var(--c-surface-2);
+  border-color: var(--c-gold-line);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.24), 0 22px 44px rgba(0, 0, 0, 0.34);
+}
+
+/* 카드 맨 윗줄 — 번호와 작성 상태 */
+.room-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.room-no {
+  font-family: var(--f-serif);
+  font-size: 2.3rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--c-gold);
+}
+
+/* 작성 상태 — 누르는 것이 아니므로 '글자 라벨'로만 보이게 한다 */
+.room-status {
+  flex: none;
+  margin-top: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.5;
+  color: var(--c-text-mute);
+  white-space: nowrap;
+}
+.room-status.is-partial {
+  color: var(--c-gold);
+  background: var(--c-glow-soft);
+}
+.room-status.is-done {
+  color: var(--c-gold);
+  background: var(--c-glow-soft);
+  font-weight: 700;
+}
+
+.room-years {
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--c-text-mute);
+  margin-bottom: 10px;
+}
+
+.room-name {
+  font-size: clamp(1.2rem, 1.9vw, 1.4rem);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.room-summary {
+  font-size: 0.93rem;
+  color: var(--c-text-dim);
+  line-height: 1.68;
+  margin-bottom: 20px;
+}
+
+/* 이 카드에서 '누르는 곳'은 여기 하나 — 색으로 채워 확실히 드러낸다 */
+.room-enter {
+  margin-top: auto;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 13px 20px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--c-ink);
+  background: var(--c-gold);
+  border: 1px solid var(--c-gold);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--sh-btn);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease),
+              color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.room-enter .arrow { transition: transform 0.3s var(--ease); }
+.room-card:hover .room-enter,
+.room-card:focus-visible .room-enter {
+  background: var(--c-gold-soft);
+  border-color: var(--c-gold-soft);
+  box-shadow: var(--sh-btn-lift);
+}
+.room-card:hover .arrow { transform: translateX(4px); }
+.room-card:active .room-enter { box-shadow: var(--sh-btn-press); }
+
+/* 다른 전시실을 이미 골랐을 때 — 이 카드는 고를 수 없다.
+   '누르는 버튼'처럼 보이지 않도록 채운 색을 걷어낸다 */
+.room-card.is-locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.room-card.is-locked .arrow { display: none; }
+.room-card.is-locked .room-enter {
+  background: none;
+  border-color: var(--c-line);
+  color: var(--c-text-mute);
+  box-shadow: none;
+  font-weight: 500;
+}
+.room-card.is-locked::before { opacity: 0.4; }
+
+/* =========================================================
+   8. 수행평가 방법 — 네 단계를 한 줄에 펼쳐 보여 준다
+   ========================================================= */
+.flow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 읽는 카드 — 누르는 것이 아니므로 테두리·그림자를 걷어내고 면만 남긴다 */
+.flow-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 20px 20px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+/* 카드 맨 위의 단계 색 띠 — 네 단계가 이어진다는 것을 색으로 먼저 알린다 */
+.flow-step::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--step-color, var(--c-gold));
+}
+/* 단계마다 다른 색 — 전시실 색과 같은 계열로 맞춘다 */
+.flow-step:nth-child(1) { --step-color: #7fc9ac; }
+.flow-step:nth-child(2) { --step-color: #e89464; }
+.flow-step:nth-child(3) { --step-color: #78b4ea; }
+.flow-step:nth-child(4) { --step-color: #e0b649; }
+
+/* 제목 줄 — 번호와 제목을 한 덩어리로 크게 세운다 */
+.flow-title {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: clamp(1.08rem, 1.5vw, 1.22rem);
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: -0.03em;
+  color: var(--c-text);
+}
+.flow-no {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.09);   /* color-mix 미지원 브라우저용 */
+  background: color-mix(in srgb, var(--step-color, var(--c-gold)) 22%, transparent);
+  font-family: var(--f-sans);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--step-color, var(--c-gold));
+  letter-spacing: -0.02em;
+  margin-right: 0;
+}
+.flow-text {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--c-text-mute);
+}
+.flow-text strong { color: var(--c-text-dim); font-weight: 700; }
+
+/* 완성 기준 요약 — 배지들을 걷어내고 한 줄 문장처럼 읽히게 */
+.flow-sum {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-top: 14px;
+  padding: 14px 20px;
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+}
+.flow-sum-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--c-gold);
+  white-space: nowrap;
+}
+
+.flow-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+}
+.flow-chips li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.92rem;
+  color: var(--c-text-dim);
+  white-space: nowrap;
+}
+.flow-chips li b { color: var(--c-text); font-weight: 700; }
+/* 마지막 칸(제출물)만 색으로 강조 */
+.flow-chips li.is-goal { color: var(--c-gold); }
+.flow-chips li.is-goal b { color: var(--c-gold); }
+
+.flow-sum-note {
+  flex: 1 1 300px;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--c-text-mute);
+}
+
+/* ---------- 9. 유물 카드 (액자 + 전시 라벨) ---------- */
+
+/* 작성 안내 배너 */
+.notice {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  border: 1px solid var(--c-glow);
+  border-radius: var(--radius);
+  background: var(--c-glow-soft);
+  padding: 18px 22px;
+  margin-bottom: clamp(26px, 3.4vw, 38px);
+  font-size: 0.93rem;
+  color: var(--c-text-dim);
+}
+.notice strong { color: var(--c-gold); font-weight: 700; }
+
+/* 8-1. 이 전시실을 고른 이유 (전시실 화면 맨 위, 자료 카드보다 먼저 온다) */
+.room-reason {
+  max-width: 820px;
+  margin: 0 0 clamp(28px, 3.4vw, 40px);
+  padding: 22px 24px 24px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--radius);
+}
+
+/* 9-1. 상단 도구 막대 (유물 추가 / 저장 상태) */
+.exhibit-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;   /* 버튼이 숨으면 상태 문구만 오른쪽에 남는다 */
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  padding-bottom: 20px;
+  margin-bottom: clamp(26px, 3.4vw, 40px);
+  border-bottom: 1px solid var(--c-line-soft);
+}
+/* 자료 등록 버튼 + 옆의 사용법 안내를 한 묶음으로 왼쪽에 고정 */
+.toolbar-add {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  margin-right: auto;
+}
+/* 안내 문구 — 버튼과 헷갈리지 않게 면·그림자를 걷어낸다 */
+.toolbar-hint {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--c-text-mute);
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.toolbar-hint-icon {
+  flex: none;
+  font-family: var(--f-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--c-gold);
+  background: var(--c-glow-soft);
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+.toolbar-hint strong { color: var(--c-text-dim); font-weight: 700; }
+
+/* =========================================================
+   버튼 — 이 페이지에서 '누르는 것'은 모두 이 한 벌을 따른다
+   1순위(.btn / .btn-primary)  : 색으로 꽉 채움 + 그림자
+   2순위(.btn-ghost 등)        : 면 + 테두리
+   눌리지 않는 라벨            : 면도 테두리도 주지 않는다
+   ========================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-family: var(--f-sans);
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--c-ink);
+  background: var(--c-gold);
+  border: 1px solid var(--c-gold);
+  border-radius: var(--radius-sm);
+  padding: 13px 24px;
+  min-height: 50px;          /* 터치 영역 확보 */
+  cursor: pointer;
+  box-shadow: var(--sh-btn);
+  transition: background 0.2s var(--ease), color 0.2s var(--ease),
+              box-shadow 0.2s var(--ease), transform 0.15s var(--ease);
+}
+.btn:hover {
+  background: var(--c-gold-soft);
+  border-color: var(--c-gold-soft);
+  color: var(--c-ink);
+  box-shadow: var(--sh-btn-lift);
+}
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: var(--sh-btn-press);
+}
+.btn .plus { font-size: 1.2rem; line-height: 1; }
+
+.save-state {
+  font-size: 0.86rem;
+  letter-spacing: 0;
+  color: var(--c-text-mute);
+}
+.save-state.is-error { color: var(--c-warn); }
+
+/* 9-2. 카드 자리 — 전시실마다 유물 1점이므로 한 장을 넓게 놓는다 */
+.artifact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(22px, 2.8vw, 36px);
+  max-width: 820px;
+}
+
+.artifact-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-surface);
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--radius);
+  padding: clamp(20px, 2.2vw, 28px);
+  box-shadow: var(--sh-card);
+  transition: border-color 0.3s var(--ease);
+}
+.artifact-card:focus-within { border-color: var(--c-gold-line); }
+
+/* 카드 삭제 버튼 */
+.card-remove {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--c-text-dim);
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--sh-btn);
+  cursor: pointer;
+  opacity: 1;
+  transition: color 0.2s var(--ease), background 0.2s var(--ease),
+              border-color 0.2s var(--ease), transform 0.15s var(--ease);
+}
+.card-remove:hover,
+.card-remove:focus-visible {
+  color: var(--c-ink);
+  background: var(--c-warn);
+  border-color: var(--c-warn);
+}
+.card-remove:active { transform: translateY(1px); box-shadow: var(--sh-btn-press); }
+
+/* 9-1-1. 카드 머리 — 접혀 있어도 이 줄만은 항상 남는다 */
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px 16px;
+  padding-right: 56px;      /* 오른쪽 위 삭제 버튼과 겹치지 않게 */
+  margin-bottom: clamp(16px, 2vw, 22px);
+}
+.card-toggle {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  min-width: 0;
+  min-height: 42px;
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--sh-btn);
+  padding: 6px 14px 6px 6px;
+  font-family: var(--f-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--c-text);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s var(--ease), background 0.2s var(--ease),
+              border-color 0.2s var(--ease), transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.card-toggle:hover {
+  color: var(--c-ink);
+  background: var(--c-gold);
+  border-color: var(--c-gold);
+}
+.card-toggle:active { transform: translateY(1px); box-shadow: var(--sh-btn-press); }
+/* 펼침·접힘을 알려 주는 화살표 배지 — 이 자리를 누르면 접힌다는 것을 눈에 띄게 */
+.card-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--c-glow-soft);
+  color: var(--c-gold);
+  font-size: 0.9rem;
+  line-height: 1;
+  transition: transform 0.25s var(--ease), background 0.25s var(--ease), color 0.25s var(--ease);
+}
+.card-toggle:hover .card-toggle-icon { background: rgba(0, 0, 0, 0.18); color: var(--c-ink); }
+.card-toggle[aria-expanded="false"] .card-toggle-icon { transform: rotate(-90deg); }
+/* 지금 눌렀을 때 일어날 동작을 말로도 알려 준다 (펼치기 / 접기) */
+.card-toggle-label {
+  font-family: var(--f-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--c-text-mute);
+}
+.card-toggle:hover .card-toggle-label { color: var(--c-ink); }
+.artifact-card.is-collapsed .card-head { margin-bottom: 0; }
+
+/* 9-3. 액자 (프레임 + 매트지) */
+/* 액자 — 무늬·겹테두리를 걷어내고 한 겹의 단순한 틀로 */
+.artifact-frame {
+  padding: 8px;                                    /* 액자 테두리 두께 */
+  background: var(--c-frame);
+  border: 1px solid var(--c-frame-line);
+  border-radius: var(--radius-sm);
+}
+.artifact-mat {
+  position: relative;
+  padding: 8px;                                    /* 매트지 여백 */
+  background: var(--c-inset);
+  border: none;
+  border-radius: 8px;
+}
+
+/* 사진 첨부 영역 (클릭 + 드래그앤드롭) — 누르는 곳이므로 점선을 또렷하게 */
+.dropzone {
+  position: relative;
+  display: grid;
+  grid-template-areas: "stack";   /* 사진과 안내문을 같은 칸에 겹쳐 놓는다 */
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+  background: var(--c-pattern), var(--c-inset);
+  border: 2px dashed var(--c-glow-line);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.25s var(--ease), background-color 0.25s var(--ease);
+}
+.dropzone:hover,
+.dropzone.is-dragover { border-color: var(--c-gold); background-color: var(--c-glow-soft); }
+.artifact-card:focus-within .dropzone { border-color: var(--c-gold); }
+
+/* 파일 input — 화면에서만 숨기고 키보드 포커스는 유지 */
+.file-input {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+/* 키보드로 파일 input에 포커스가 오면 첨부 영역 전체를 표시 */
+/* 키보드로 파일 선택칸에 왔을 때만 테두리를 보여 준다
+   (마우스·손가락으로 사진을 고른 뒤에는 테두리가 남지 않게) */
+.dropzone:has(.file-input:focus-visible) {
+  outline: 2px solid var(--c-gold);
+  outline-offset: 3px;
+}
+
+.dz-guide {
+  grid-area: stack;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 20px;
+  color: var(--c-text-mute);
+  pointer-events: none;
+}
+/* ＋ 표시는 동그란 버튼처럼 — 여기를 누르면 된다는 신호 */
+.dz-guide .dz-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--c-gold);
+  color: var(--c-ink);
+  font-size: 1.5rem;
+  line-height: 1;
+  opacity: 1;
+  box-shadow: var(--sh-btn);
+}
+.dz-guide .dz-title {
+  font-family: var(--f-sans);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--c-text);
+}
+.dz-guide .dz-hint { font-size: 0.86rem; line-height: 1.6; }
+/* 안내 문구는 마우스용 / 터치용 두 가지를 두고 기기에 맞는 쪽만 보여 준다 */
+.dz-hint-touch { display: none; }
+
+/* 첨부된 사진 미리보기 */
+.dz-photo {
+  grid-area: stack;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--c-inset);
+}
+
+/* 사진이 들어오면 안내문 숨김 */
+.artifact-card.has-photo .dz-guide { display: none; }
+.artifact-card.has-photo .dropzone { border-style: solid; border-color: var(--c-line); }
+
+.photo-remove {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2;
+  font-family: var(--f-sans);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--c-text);
+  background: rgba(20, 23, 29, 0.92);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--sh-btn);
+  padding: 10px 14px;
+  min-height: 42px;
+  cursor: pointer;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease),
+              color 0.2s var(--ease), transform 0.15s var(--ease);
+}
+.photo-remove:hover { color: var(--c-ink); background: var(--c-warn); border-color: var(--c-warn); }
+.photo-remove:active { transform: translateY(1px); box-shadow: var(--sh-btn-press); }
+
+/* 9-4. 전시 라벨 (캡션 패널) */
+.artifact-plate {
+  margin-top: 20px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
+
+.field { display: block; }
+.field + .field { margin-top: 20px; }
+
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-sans);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--c-text);
+  margin-bottom: 10px;
+}
+.field-input {
+  display: block;
+  width: 100%;
+  min-height: 96px;
+  resize: vertical;
+  overflow: hidden;                 /* 입력에 따라 높이 자동 확장 */
+  font-family: var(--f-sans);
+  font-size: 0.98rem;
+  line-height: 1.75;
+  color: var(--c-text);
+  background: var(--c-inset);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.field-input::placeholder { color: var(--c-text-mute); }
+.field-input:hover { border-color: var(--c-text-mute); }
+.field-input:focus {
+  outline: none;
+  border-color: var(--c-gold);
+  box-shadow: 0 0 0 3px var(--c-glow);
+}
+
+/* 카드가 하나도 없을 때 */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: clamp(48px, 8vw, 90px) 20px;
+  border: 1px dashed var(--c-line);
+  border-radius: var(--radius);
+  color: var(--c-text-dim);
+  font-size: 0.9rem;
+}
+
+/* ---------- 11. 푸터 ---------- */
+.site-footer {
+  border-top: 1px solid var(--c-line-soft);
+  padding: clamp(40px, 6vw, 64px) 0 48px;
+  background: var(--c-bg-deep);
+}
+/* 바닥글은 이름과 저작권 한 줄씩만 — 메뉴는 헤더에 늘 떠 있으므로 되풀이하지 않는다 */
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 40px;
+}
+.footer-brand { font-size: 1.02rem; }
+.footer-brand .brand-mark { color: var(--c-gold); }
+.footer-copyright { font-size: 0.82rem; color: var(--c-text-mute); }
+
+/* =========================================================
+   12. 입장 화면 (학번·이름) + 기획자 표시줄
+   ========================================================= */
+
+/* 입장 전에는 본문을 감춘다 (입장 화면만 남김) */
+html.is-locked,
+html.is-locked body { overflow: hidden; height: 100%; }
+html.is-locked body > *:not(.gate) { display: none !important; }
+
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow-y: auto;
+  background: rgba(16, 19, 25, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+/* 입구 조명 */
+.gate::before {
+  content: "";
+  position: absolute;
+  inset: -20% 10% auto -10%;
+  height: 90%;
+  background: radial-gradient(ellipse at 40% 0%, rgba(224, 182, 73, 0.09), transparent 60%);
+  pointer-events: none;
+}
+
+.gate-card {
+  position: relative;
+  width: min(500px, 100%);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius);
+  padding: clamp(28px, 5vw, 44px);
+  box-shadow: var(--sh-pop);
+}
+
+.gate-brand {
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+  color: var(--c-text-mute);
+  margin-bottom: 24px;
+}
+.gate-brand .brand-mark { color: var(--c-gold); }
+
+.gate-title {
+  font-size: clamp(1.5rem, 3.4vw, 1.95rem);
+  margin: 14px 0 14px;
+}
+/* 입장 화면에 적히는 수행평가 이름 — 라벨이지 버튼이 아니다 */
+.gate-assign {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--c-glow-soft);
+  border: 1px solid var(--c-glow);
+  color: var(--c-gold);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.gate-desc {
+  font-size: 0.94rem;
+  line-height: 1.75;
+  color: var(--c-text-dim);
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--c-line-soft);
+}
+
+.gate-field + .gate-field { margin-top: 18px; }
+
+.gate-label {
+  display: block;
+  font-family: var(--f-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 9px;
+}
+
+.gate-input {
+  display: block;
+  width: 100%;
+  min-height: 54px;
+  font-family: var(--f-sans);
+  font-size: 1rem;
+  color: var(--c-text);
+  background: var(--c-inset);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.gate-input:hover { border-color: var(--c-text-mute); }
+.gate-input::placeholder { color: var(--c-text-mute); }
+.gate-input:focus {
+  outline: none;
+  border-color: var(--c-gold);
+  box-shadow: 0 0 0 3px var(--c-glow);
+}
+
+.gate-error {
+  display: none;
+  margin-top: 14px;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--c-warn);
+}
+.gate-error.is-on { display: block; }
+
+.gate-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 26px;
+}
+.gate-actions .btn { flex: 1; justify-content: center; }
+
+/* 1순위 버튼 — 화면에서 가장 눈에 띄어야 하는 하나 */
+.btn-primary {
+  background: var(--c-gold);
+  border-color: var(--c-gold);
+  color: var(--c-ink);
+  font-weight: 700;
+  font-size: 1.02rem;
+  min-height: 54px;
+  box-shadow: var(--sh-btn-lift);
+}
+.btn-primary:hover {
+  background: var(--c-gold-soft);
+  border-color: var(--c-gold-soft);
+}
+.btn-primary:active { box-shadow: var(--sh-btn-press); }
+
+/* 2순위 버튼 — 면과 테두리는 있지만 색은 쓰지 않는다 */
+.btn-ghost {
+  flex: 0 0 auto !important;
+  color: var(--c-text);
+  background: var(--c-surface-2);
+  border-color: var(--c-line);
+  box-shadow: var(--sh-btn);
+}
+.btn-ghost:hover {
+  background: var(--c-line);
+  color: var(--c-text);
+  border-color: var(--c-text-mute);
+  box-shadow: var(--sh-btn);
+}
+
+.gate-note {
+  margin-top: 20px;
+  font-size: 0.85rem;
+  line-height: 1.75;
+  color: var(--c-text-mute);
+}
+.gate-link {
+  color: var(--c-gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.gate-link:hover { color: var(--c-gold-soft); }
+
+/* 기획자 표시줄 (모든 페이지 상단) */
+.visitor-bar {
+  border-bottom: 1px solid var(--c-line-soft);
+  background: var(--c-bg-deep);
+}
+.visitor-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-height: 44px;
+  padding-block: 7px;
+}
+.visitor-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: auto;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--c-text);
+}
+.visitor-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--c-gold);
+  background: var(--c-glow-soft);
+  border-radius: 5px;
+  padding: 2px 8px;
+}
+
+/* 표시줄 안의 작은 버튼 두 벌 — 크기만 줄이고 버튼 언어는 본문과 똑같이 */
+.visitor-edit,
+.visitor-logout {
+  font-family: var(--f-sans);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--c-text-dim);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: 8px;
+  padding: 7px 13px;
+  min-height: 36px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease),
+              border-color 0.2s var(--ease), transform 0.15s var(--ease);
+}
+.visitor-edit:hover {
+  color: var(--c-text);
+  background: var(--c-surface-2);
+  border-color: var(--c-text-mute);
+}
+.visitor-logout:hover,
+.visitor-logout:focus-visible {
+  color: var(--c-warn);
+  border-color: var(--c-warn);
+}
+.visitor-edit:active,
+.visitor-logout:active { transform: translateY(1px); }
+
+/* 표시줄 안의 PDF 저장 버튼 — 여기서 가장 중요한 동작 */
+.visitor-pdf {
+  font-family: var(--f-sans);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--c-ink);
+  background: var(--c-gold);
+  border: 1px solid var(--c-gold);
+  box-shadow: var(--sh-btn);
+  border-radius: 8px;
+  padding: 7px 15px;
+  min-height: 36px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease),
+              box-shadow 0.15s var(--ease), transform 0.15s var(--ease);
+}
+.visitor-pdf:hover { background: var(--c-gold-soft); color: var(--c-ink); box-shadow: var(--sh-btn-lift); }
+.visitor-pdf:active { transform: translateY(1px); box-shadow: var(--sh-btn-press); }
+
+/* 제출 — 버튼 하나와 한 줄 안내만 둔다 */
+.submit-title {
+  font-size: clamp(1.28rem, 2.2vw, 1.65rem);
+  margin-bottom: clamp(16px, 2vw, 22px);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--c-line-soft);
+}
+
+.submit-box {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 22px;
+  padding: clamp(22px, 2.6vw, 30px);
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+}
+.submit-box .btn { min-height: 54px; font-size: 1.02rem; box-shadow: var(--sh-btn-lift); }
+.submit-note {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--c-text-dim);
+}
+.submit-note strong { color: var(--c-gold); font-weight: 700; }
+
+.export-status {
+  width: 100%;
+  font-size: 0.9rem;
+  color: var(--c-gold);
+  margin: 0;
+}
+.export-status.is-error { color: var(--c-warn); }
+
+/* 전시실 아래쪽(‘PDF 파일로 저장’ 줄 바로 밑)에 놓인 안내 — 제출 상자 밖이라 간격을 따로 준다.
+   비어 있을 때는 자리를 차지하지 않게 여백을 주지 않는다.
+   (display:none으로 감추면 안 된다 — export-pdf.js가 ‘지금 보이는 안내 자리’를
+    offsetWidth로 가려내므로, 늘 비어 있는 안내 자리는 영영 숨은 것으로 취급된다) */
+.room-foot + .export-status { line-height: 1.6; }
+.room-foot + .export-status:not(:empty) { margin-top: 14px; }
+
+/* =========================================================
+   13. 반응형 — 아이패드(태블릿) 우선 대응
+   기준: 가로 1024~1180 / 세로 768~834 를 주 사용 환경으로 본다
+   ========================================================= */
+
+/* --- 13-1. 태블릿 가로 · 작은 노트북: 1180px 이하 --- */
+@media (max-width: 1180px) {
+  .room-grid   { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .room-card   { min-height: 268px; padding: 26px; }
+  .room-no     { font-size: 2.1rem; margin-bottom: 18px; }
+
+  /* 가로로 넓게 써서 아래로 덜 굴러도 되게 */
+  .artifact-grid { max-width: none; }
+}
+
+/* --- 13-2. 태블릿 세로 (768~900px) --- */
+@media (max-width: 900px) {
+  /* 이 폭부터는 상단 메뉴를 접이식으로 바꾼다 (가로 메뉴가 눌리기 좁아지는 지점) */
+  .nav-toggle { display: grid; width: 48px; height: 48px; }
+
+  .header-inner { position: relative; }
+
+  .site-nav {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: var(--c-surface);
+    border-bottom: 1px solid var(--c-line);
+    box-shadow: var(--sh-card);
+    display: none;
+  }
+  .site-nav.is-open { display: block; }
+
+  .nav-list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 6px var(--pad-x) 16px;
+  }
+  .nav-list li + li { border-top: 1px solid var(--c-line); }
+  /* 아래 13-4(터치) 규칙보다 우선하도록 선택자를 한 단계 더 잡는다 */
+  .site-nav .nav-list a {
+    display: flex;
+    align-items: center;
+    min-height: 56px;      /* 손가락으로 누르기 편한 높이 */
+    padding: 4px 0;
+    font-size: 1rem;
+    color: var(--c-text);
+  }
+  .nav-list a::after { display: none; }
+  .nav-list a[aria-current] { color: var(--c-gold); }
+
+  /* 전시실 카드 — 두 칸, 마지막 한 장은 넓게 */
+  .room-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .room-card { min-height: auto; }
+  .room-card:last-child { grid-column: 1 / -1; }
+  .room-enter { padding-top: 20px; }
+
+  .flow { grid-template-columns: 1fr 1fr; gap: 12px; }
+  /* 두 줄로 접히면 줄 사이 화살표는 어색하다 */
+  .flow-step + .flow-step::after { display: none; }
+}
+
+/* --- 13-3. 작은 태블릿 세로 · 큰 휴대폰: 700px 이하 --- */
+@media (max-width: 700px) {
+  body { font-size: 15px; }
+
+  .room-grid   { grid-template-columns: 1fr; }
+  .room-card:last-child { grid-column: auto; }
+  .flow        { grid-template-columns: 1fr; }
+  .flow-step   { padding: 20px 18px; }
+  .flow-chips li { font-size: 0.9rem; }
+
+  .step        { grid-template-columns: 40px 1fr; gap: 0 14px; padding: 20px 0; }
+  .step-no     { font-size: 1.25rem; }
+
+  .exhibit-toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar-add     { flex-direction: column; align-items: stretch; margin-right: 0; }
+  .exhibit-toolbar .btn { justify-content: center; width: 100%; }
+  .toolbar-hint    { justify-content: center; text-align: center; }
+  .save-state      { text-align: center; }
+  .room-reason     { padding: 18px 18px 20px; }
+
+  /* 입장 화면 · 기획자 표시줄 */
+  .gate            { padding: 16px; place-items: start center; }
+  .gate-card       { margin-block: 16px; }
+  .gate-actions    { flex-direction: column-reverse; }
+  .btn-ghost       { flex: 1 0 auto !important; }
+  .visitor-bar-inner { justify-content: space-between; }
+}
+
+/* =========================================================
+   13-4. 터치 기기 전용 — 화면 폭과 상관없이 손가락 기준으로 고친다
+   (아이패드는 가로 1024px여도 마우스가 없다)
+   ========================================================= */
+@media (hover: none), (pointer: coarse) {
+
+  /* --- 누를 수 있는 것은 모두 최소 44px --- */
+  .nav-list a { min-height: 46px; display: flex; align-items: center; }
+  .btn { min-height: 56px; padding: 16px 26px; font-size: 1.02rem; }
+  .skip-link { padding: 14px 20px; }
+
+  /* 전시실을 오가는 단추 — 손가락으로 정확히 누를 수 있게 */
+  .room-switch-list a { min-height: 42px; padding: 8px 16px; font-size: 0.92rem; }
+  .room-switch-home  { min-height: 50px; font-size: 1rem; }
+  .room-move         { min-height: 50px; font-size: 1rem; }
+  .room-enter        { min-height: 56px; font-size: 1.02rem; }
+  .card-toggle       { min-height: 46px; font-size: 0.9rem; }
+  .room-status       { font-size: 0.84rem; padding: 5px 12px; }
+
+  /* 기획자 표시줄 — 작은 글씨 버튼들을 실제로 누를 수 있게 키운다 */
+  .visitor-bar-inner {
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    padding-block: 8px;
+  }
+  /* 이름은 왼쪽, 버튼들은 오른쪽에 나란히 */
+  .visitor-info { margin-right: auto; font-size: 0.95rem; }
+  .visitor-pdf,
+  .visitor-edit,
+  .visitor-logout {
+    font-size: 0.92rem;
+    padding: 11px 18px;
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .visitor-logout:active { color: var(--c-warn); border-color: var(--c-warn); }
+
+  /* 표시줄이 커진 만큼, 메뉴로 이동했을 때 제목이 가리지 않게 여유를 더 준다 */
+  .section[id], .hero[id] { scroll-margin-top: 138px; }
+
+  /* 카드 삭제 · 사진 삭제 버튼 */
+  .card-remove {
+    width: 48px;
+    height: 48px;
+    top: 10px;
+    right: 10px;
+    font-size: 1.4rem;
+  }
+  .photo-remove {
+    right: 14px;
+    bottom: 14px;
+    font-size: 0.92rem;
+    padding: 13px 18px;
+    min-height: 48px;
+  }
+
+  /* --- 입력칸 --- */
+  /* 16px 미만이면 태블릿에서 입력할 때 화면이 확대되어 버린다 */
+  .field-input {
+    font-size: 1.02rem;
+    min-height: 120px;
+    padding: 16px 18px;
+    resize: none;                 /* 크기 조절 손잡이는 터치로 쓰기 어렵다 */
+  }
+  .gate-input { font-size: 1.02rem; min-height: 56px; padding: 16px 18px; }
+  .gate-card  { padding: clamp(24px, 4vw, 40px); }
+
+  /* --- 사진 첨부 액자 --- */
+  /* 4:3 비율 그대로 두면 액자가 화면을 다 먹어 사진과 글칸을 오가며 계속 굴려야 한다.
+     비율 대신 높이를 정해 액자 가로폭은 그대로 채운다 */
+  .dropzone {
+    aspect-ratio: auto;
+    height: clamp(240px, 40vh, 460px);
+  }
+  .dz-guide .dz-icon { width: 58px; height: 58px; font-size: 1.7rem; }
+  .dz-guide .dz-title { font-size: 1.12rem; }
+  .dz-guide .dz-hint { font-size: 0.9rem; }
+
+  /* 마우스를 올려야 보이던 안내를 처음부터 보여 준다 */
+  .room-no { opacity: 1; }
+
+  /* 누르는 순간의 반응 (호버가 없으니 눌린 느낌으로 대신한다) */
+  .room-card:active { transform: translateY(1px); background: var(--c-surface-2); }
+  .btn:active { background: var(--c-gold-soft); color: var(--c-ink); }
+  .btn-ghost:active { background: var(--c-line); color: var(--c-text); }
+  .visitor-pdf:active { background: var(--c-gold-soft); color: var(--c-ink); }
+  .dropzone:active { border-color: var(--c-gold); background-color: var(--c-glow-soft); }
+  .card-remove:active { color: var(--c-ink); background: var(--c-warn); border-color: var(--c-warn); }
+
+  /* 터치에서는 :hover가 눌린 뒤에도 남아 붙는다 — 자리가 움직이는 효과만 끈다 */
+  .room-card:hover { transform: none; }
+  .room-card:hover .arrow { transform: none; }
+  .room-card:active .room-enter { box-shadow: var(--sh-btn-press); }
+  .btn:hover { background: var(--c-gold); color: var(--c-ink); box-shadow: var(--sh-btn); }
+  .btn-primary:hover { background: var(--c-gold); color: var(--c-ink); }
+  .visitor-pdf:hover { background: var(--c-gold); color: var(--c-ink); box-shadow: var(--sh-btn); }
+  .room-switch-home:hover,
+  .room-move:hover { background: var(--c-surface-2); color: var(--c-text); border-color: var(--c-line); }
+  .room-move-next:hover { background: var(--c-glow-soft); color: var(--c-gold); }
+  .card-toggle:hover { background: var(--c-surface-2); color: var(--c-text); border-color: var(--c-line); }
+  .card-toggle:hover .card-toggle-icon { background: var(--c-glow-soft); color: var(--c-gold); }
+  .card-toggle:hover .card-toggle-label { color: var(--c-text-mute); }
+  .photo-remove:hover { background: rgba(20, 23, 29, 0.92); color: var(--c-text); border-color: var(--c-line); }
+  .card-remove:hover { background: var(--c-surface-2); color: var(--c-text-dim); border-color: var(--c-line); }
+
+  /* 안내 문구도 터치 기준으로 바꾼다 (index.html의 두 문구를 교체) */
+  .dz-hint-mouse { display: none; }
+  .dz-hint-touch { display: block; }
+}
+
+/* 태블릿을 가로로 눕히면 화면이 낮아진다 — 액자를 조금 더 낮게 */
+@media (pointer: coarse) and (orientation: landscape) and (min-width: 900px) {
+  .dropzone { height: clamp(220px, 34vh, 400px); }
+}
+
+/* =========================================================
+   14. 사용 안내 페이지 (guide.html)
+   ========================================================= */
+.step-list { border-top: 1px solid var(--c-line-soft); }
+
+.step {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  gap: 0 22px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--c-line-soft);
+}
+.step-no {
+  font-family: var(--f-sans);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--c-gold);
+  opacity: 1;
+}
+.step h3 {
+  font-size: 1.1rem;
+  margin-bottom: 9px;
+}
+.step p {
+  font-size: 0.95rem;
+  color: var(--c-text-dim);
+  line-height: 1.75;
+}
+.step .tip {
+  display: block;
+  margin-top: 10px;
+  padding-left: 14px;
+  border-left: 2px solid var(--c-glow-line);
+  font-size: 0.89rem;
+  color: var(--c-text-mute);
+}
+
+.callout {
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+  padding: clamp(22px, 3vw, 30px);
+}
+.callout h3 { font-size: 1.08rem; margin-bottom: 14px; }
+.callout li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 0.94rem;
+  color: var(--c-text-dim);
+  line-height: 1.75;
+}
+.callout li + li { margin-top: 10px; }
+.callout li::before {
+  content: "·";
+  position: absolute;
+  left: 2px;
+  color: var(--c-gold);
+}
+
+/* =========================================================
+   15. 전시 도록 PDF — 인쇄용 문서
+   화면에서는 감춰 두고, PDF로 저장할 때만 이 문서만 인쇄한다.
+   ========================================================= */
+.print-sheet { display: none; }
+
+@media print {
+  /* 도록을 인쇄하는 동안에는 이 문서 외의 모든 것을 감춘다 */
+  html.is-printing body > *:not(.print-sheet) { display: none !important; }
+  html.is-printing .print-sheet { display: block !important; }
+
+  @page { size: A4 portrait; margin: 15mm 14mm; }
+
+  .print-sheet {
+    background: #fff;
+    color: #16181c;
+    font-family: var(--f-sans);
+    font-size: 10.5pt;
+    line-height: 1.7;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print-sheet h1,
+  .print-sheet h2,
+  .print-sheet h3 { font-family: var(--f-serif); color: #16181c; }
+
+  .pr-eyebrow {
+    font-size: 8pt;
+    letter-spacing: 0.22em;
+    color: #8a6d1f;
+    margin: 0 0 6mm;
+  }
+  .pr-rule { width: 26mm; height: 2px; background: #8a6d1f; }
+
+  /* ---- 표지 ---- */
+  .pr-cover {
+    break-after: page;
+    page-break-after: always;
+    padding-top: 22mm;
+  }
+  .pr-cover-title {
+    font-size: 30pt;
+    line-height: 1.28;
+    margin: 0 0 5mm;
+  }
+  .pr-cover-sub {
+    font-family: var(--f-serif);
+    font-size: 13pt;
+    color: #4a4d54;
+    margin: 0 0 7mm;
+  }
+  .pr-cover-desc {
+    max-width: 110mm;
+    margin: 7mm 0 0;
+    color: #4a4d54;
+    font-size: 10pt;
+  }
+
+  .pr-meta {
+    margin: 12mm 0 0;
+    border-top: 1px solid #d3d5d9;
+    padding-top: 5mm;
+  }
+  .pr-meta > div {
+    display: flex;
+    gap: 6mm;
+    padding: 1.6mm 0;
+  }
+  .pr-meta dt {
+    flex: 0 0 24mm;
+    font-size: 8pt;
+    letter-spacing: 0.14em;
+    color: #8a6d1f;
+    padding-top: 1mm;
+  }
+  .pr-meta dd { margin: 0; font-size: 10pt; }
+
+  .pr-reason {
+    margin: 8mm 0 0;
+    border-top: 1px solid #d3d5d9;
+    padding-top: 5mm;
+  }
+  .pr-reason h3 {
+    font-size: 8pt;
+    letter-spacing: 0.14em;
+    color: #8a6d1f;
+    margin: 0 0 2.5mm;
+  }
+  .pr-reason p {
+    margin: 0;
+    font-size: 10pt;
+    line-height: 1.75;
+    color: #2c2f35;
+    white-space: pre-wrap;
+  }
+  .pr-reason p.is-blank { color: #9a9da3; }
+
+  /* ---- 전시실 (학생이 고른 한 곳) ---- */
+  /* 화면에서 쓰는 전시실 색을 인쇄용으로 한 단 진하게 옮긴 값 */
+  .pr-room-01 { --pr-accent: #4a7567; }   /* 청자 옥빛 */
+  .pr-room-02 { --pr-accent: #a25630; }   /* 횃불 · 흙빛 */
+  .pr-room-03 { --pr-accent: #33608c; }   /* 새벽 하늘빛 */
+
+  .pr-room .pr-eyebrow,
+  .pr-room .pr-index { color: var(--pr-accent, #8a6d1f); }
+  .pr-room .pr-index { border-bottom-color: var(--pr-accent, #e4e5e8); }
+
+  .pr-room-head {
+    border-bottom: 2px solid var(--pr-accent, #8a6d1f);
+    padding-bottom: 4mm;
+    margin-bottom: 8mm;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  .pr-room-head .pr-eyebrow { margin-bottom: 3mm; }
+  .pr-room-title { font-size: 18pt; margin: 0; }
+
+  .pr-empty {
+    border: 1px dashed #c8cace;
+    padding: 8mm;
+    text-align: center;
+    color: #6a6d74;
+    font-size: 9.5pt;
+  }
+
+  /* ---- 유물 카드 (페이지 중간에서 잘리지 않게) ---- */
+  .pr-card {
+    display: flex;
+    align-items: flex-start;   /* 액자가 글 높이만큼 늘어나지 않도록 */
+    gap: 7mm;
+    padding: 6mm 0;
+    border-bottom: 1px solid #e4e5e8;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .pr-card:first-of-type { padding-top: 0; }
+
+  .pr-figure {
+    flex: 0 0 58mm;
+    border: 1px solid #d3d5d9;
+    padding: 2.5mm;
+    background: #fff;
+  }
+  .pr-figure img {
+    display: block;
+    width: 100%;
+    max-height: 62mm;
+    object-fit: contain;
+  }
+  .pr-figure.is-empty {
+    border-style: dashed;
+    min-height: 34mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8f9298;
+    font-size: 8.5pt;
+  }
+
+  .pr-body { flex: 1; min-width: 0; }
+  .pr-index {
+    font-size: 8pt;
+    letter-spacing: 0.18em;
+    color: #8a6d1f;
+    margin: 0 0 3mm;
+    padding-bottom: 2mm;
+    border-bottom: 1px solid #e4e5e8;
+  }
+  .pr-field + .pr-field { margin-top: 4mm; }
+  .pr-field h3 {
+    font-size: 10pt;
+    margin: 0 0 1.5mm;
+  }
+  .pr-field p {
+    margin: 0;
+    font-size: 9.5pt;
+    line-height: 1.75;
+    color: #2c2f35;
+    white-space: pre-wrap;   /* 학생이 넣은 줄바꿈 유지 */
+  }
+  .pr-field p.is-blank { color: #9a9da3; }
+
+  .pr-foot {
+    margin-top: 8mm;
+    padding-top: 4mm;
+    border-top: 1px solid #d3d5d9;
+    font-size: 8pt;
+    color: #8f9298;
+    text-align: right;
+  }
+}
+
+/* 모션 최소화 선호 사용자 */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* 인쇄(도록 출력) — 편집용 UI는 감추고 내용만 남김 */
+@media print {
+  .header-inner, .nav-toggle, .site-footer,
+  .exhibit-toolbar, .notice, .card-remove, .photo-remove,
+  .dz-guide, .empty-state, .visitor-edit, .gate,
+  .room-switch, .room-foot, .room-status, .submit-box, .submit-title,
+  .card-toggle-icon { display: none !important; }
+
+  /* 접어 둔 카드가 있어도 인쇄에는 내용이 전부 나오게 한다 */
+  .card-body[hidden] { display: block !important; }
+
+  /* 도록 문서를 거치지 않고 브라우저 인쇄를 바로 눌러도
+     보고 있던 전시실만 나오지 않도록, 세 전시실을 모두 펼친다 */
+  .has-js .view:not(.is-active) { display: block !important; }
+  .room-section { break-before: page; page-break-before: always; }
+
+  body { background: #fff; color: #000; }
+
+  /* 제출물에 학번·이름이 남도록 기획자 표시줄만 남긴다 */
+  .site-header {
+    position: static;
+    background: none;
+    backdrop-filter: none;
+    border-bottom: none;
+  }
+  .visitor-bar { background: none; border-bottom: 1px solid #ccc; }
+  .visitor-bar-inner { justify-content: flex-start; }
+  .visitor-info, .visitor-label { color: #000; }
+
+  /* 사용 안내 페이지를 A4 한 장으로 압축 */
+  .guide-page .wrap { max-width: none; padding-inline: 0; }
+  .guide-page .hero { padding: 0 0 3.5mm; border-bottom: 1px solid #ccc; }
+  .guide-page .hero-title { font-size: 17pt; }
+  .guide-page .hero-desc { font-size: 9pt; color: #333; max-width: none; }
+  .guide-page .hero-period { margin-bottom: 2.5mm; }
+  .guide-page .rule { display: none; }
+  .guide-page .section { padding: 3.5mm 0 0; border: none; }
+  .guide-page .section-head { margin-bottom: 2mm; }
+  .guide-page .section-title { font-size: 13pt; }
+  .guide-page .step { padding: 2.2mm 0; border-color: #ddd; break-inside: avoid; }
+  .guide-page .step-no { color: #8a6d1f; font-size: 12pt; opacity: 1; }
+  .guide-page .step h3 { font-size: 10.5pt; margin-bottom: 0.8mm; }
+  .guide-page .step p,
+  .guide-page .step .tip { font-size: 9pt; color: #333; line-height: 1.5; }
+  .guide-page .step .tip { margin-top: 1.5mm; }
+  .guide-page .callout {
+    background: none;
+    border-color: #ccc;
+    border-left-color: #8a6d1f;
+    padding: 4mm 5mm;
+    break-inside: avoid;
+  }
+  .guide-page .callout li { font-size: 9pt; color: #333; line-height: 1.55; }
+  .hero::before { display: none; }
+  .hero-title, .hero-desc, .section-title { color: #000; }
+
+  .artifact-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .artifact-card {
+    background: #fff;
+    border-color: #ccc;
+    box-shadow: none;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .artifact-frame { background: #fff; border-color: #bbb; }
+  .artifact-mat   { background: #fff; border-color: #ddd; }
+  /* 터치 기기용 높이 지정이 인쇄물에서 사진을 자르지 않게 되돌린다 */
+  .dropzone       { background: #fff; border-color: #ddd; height: auto; aspect-ratio: 4 / 3; }
+  /* 화면에서는 캡션 패널에 테두리를 두지 않지만, 종이에서는 칸이 구분되어야 한다 */
+  .artifact-plate,
+  .room-reason { background: #fff; border: 1px solid #ddd; border-left: 3px solid #b08d1f; }
+  .artifact-plate { padding: 14px 16px; }
+  .field-input {
+    background: #fff;
+    color: #000;
+    border-color: #ddd;
+    resize: none;
+  }
+}

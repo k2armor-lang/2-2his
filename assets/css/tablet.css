@@ -1,0 +1,125 @@
+/* 박물관 디자인의 태블릿 보정. 인쇄 스타일에는 적용하지 않는다.
+   폭 조건은 PC 미리보기/트랙패드 사용에도, any-pointer는 큰 터치 화면에도 대응한다. */
+@media (any-pointer: coarse), (min-width: 701px) and (max-width: 1366px) {
+  .museum { --pad-x: clamp(24px, 3.5vw, 48px); font-size: 17px; }
+  .museum .wrap { padding-left: max(var(--pad-x), env(safe-area-inset-left)); padding-right: max(var(--pad-x), env(safe-area-inset-right)); }
+  .museum .header-inner { min-height: 64px; }
+  .museum .visitor-bar-inner { min-height: 56px; gap: 8px; padding-block: 6px; }
+  .museum .visitor-info { min-width: 0; font-size: 14px; overflow-wrap: anywhere; }
+  .museum .visitor-pdf, .museum .visitor-edit, .museum .visitor-logout {
+    min-height: 44px; min-width: 44px; padding: 10px 14px; font-size: 14px;
+    display: inline-flex; justify-content: center; align-items: center;
+  }
+  .museum .nav-list a { min-height: 48px; font-size: 15px; padding-inline: 12px; }
+  .museum .nav-toggle { min-width: 48px; min-height: 48px; }
+  .museum .btn, .museum .room-switch-home, .museum .room-move {
+    min-height: 48px; padding: 12px 20px; font-size: 16px;
+  }
+  .museum .hero-link { min-height: 48px; font-size: 16px; }
+  .museum .section-note-action { min-height: 44px; padding: 10px 14px; font-size: 14px; }
+  .museum .room-enter { min-height: 48px; font-size: 16px; }
+  .museum .card-toggle { min-height: 48px; font-size: 15px; }
+  .museum .card-toggle-label { font-size: 14px; }
+  .museum .card-remove { width: 48px; height: 48px; top: 12px; right: 12px; }
+  .museum .photo-remove { min-width: 48px; min-height: 48px; font-size: 15px; padding: 12px 16px; }
+  .museum .room-status, .museum .room-years, .museum .section-note,
+  .museum .save-state, .museum .toolbar-hint { font-size: 14px; }
+  .museum .room-summary, .museum .submit-note, .museum .flow-text { font-size: 16px; line-height: 1.75; }
+  .museum .flow-title { font-size: 17px; }
+  .museum .flow-sum-label, .museum .flow-chips li, .museum .flow-sum-note { font-size: 14px; }
+  .museum .flow-sum-note { text-align: left; }
+  .museum .room-poster > span, .museum .room-poster small { font-size: 13px; letter-spacing: .02em; }
+  .museum .room-name { font-size: 24px; }
+  .museum .section-index, .museum .tag-badge { font-size: 13px; }
+  .museum .room-head { padding-block: 12px 24px; margin-bottom: 24px; }
+  .museum .room-head .lead { font-size: 17px; }
+  .museum .room-heading { font-size: clamp(28px, 3vw, 38px); margin-block: 12px; }
+  .museum .room-reason { padding: 20px; }
+  .museum .artifact-card { padding: 22px; }
+  .museum .field-label { font-size: 17px; }
+  .museum .field-input, .museum .gate-input { font-size: 17px; line-height: 1.8; padding: 14px 16px; }
+  .museum .field-input { min-height: 132px; resize: none; scroll-margin-block: 150px 32px; }
+  .museum .gate-input { min-height: 56px; }
+  .museum .gate-label { font-size: 16px; }
+  .museum .gate-brand, .museum .gate-note { font-size: 14px; }
+  .museum .gate { padding: 20px; padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+  .museum .gate-card { margin-block: auto; }
+  .museum .artifact-frame { min-width: 0; }
+  .museum .dropzone { aspect-ratio: auto; height: clamp(260px, 32vw, 350px); }
+  .museum .dz-guide .dz-title { font-size: 17px; }
+  .museum .dz-guide .dz-hint { font-size: 15px; }
+  .museum .dz-photo { min-height: 0; }
+  .museum .section[id], .museum .hero[id] { scroll-margin-top: 140px; }
+  .museum .room-foot { gap: 12px; }
+  .museum .room-foot .btn-sub { font-size: 13px; }
+  .museum .export-status { font-size: 16px; }
+  .museum .site-footer { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+}
+
+/* 태블릿 로비: 표지의 높이를 줄여 활동 안내까지 더 빨리 보이게 한다. */
+@media (min-width: 701px) and (max-width: 1366px) {
+  .museum .hero.is-compact { padding-top: 24px; }
+  .museum .hero-layout { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 0 28px; }
+  .museum .hero-copy { padding-block: 0 12px; }
+  .museum .hero-period { margin-bottom: 14px; }
+  .museum .hero-kicker { margin-bottom: 12px; }
+  .museum .hero.is-compact .hero-title { font-size: clamp(40px, 4.2vw, 54px); margin-bottom: 16px; line-height: 1.3; }
+  .museum .hero.is-compact .hero-desc { font-size: 16px; line-height: 1.7; }
+  .museum .hero-link { margin-top: 10px; }
+  .museum .hero-art { align-self: center; height: 320px; }
+  .museum .hero-art img { min-height: 0; height: 100%; }
+  .museum .hero-art figcaption { font-size: 12px; }
+  .museum .hero-edition { margin-top: 20px; padding-block: 12px; font-size: 13px; }
+  .museum .section.is-tight { padding-block: 30px; }
+  .museum .section-head.is-row { margin-bottom: 20px; }
+  .museum .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 0; }
+  .museum .flow-step:nth-child(3) { padding-left: 0; border-left: 0; }
+  .museum .room-grid { gap: 24px; }
+  .museum .room-poster { height: 190px; padding: 18px; }
+  .museum #rooms { padding-bottom: 40px; }
+}
+
+/* 세로 / 좁은 창: 포스터 옆에 제목과 설명을 두어 세 칸의 좁은 글줄을 피한다. */
+@media (min-width: 701px) and (max-width: 959px) {
+  .museum .hero-art { height: 300px; }
+  .museum .room-grid { grid-template-columns: minmax(0, 1fr); }
+  .museum .room-card {
+    display: grid; grid-template-columns: 180px minmax(0, 1fr);
+    grid-template-areas: 'poster status' 'poster years' 'poster title' 'poster summary' 'poster enter';
+    column-gap: 24px; row-gap: 0; padding-bottom: 24px;
+  }
+  .museum .room-poster { grid-area: poster; height: auto; min-height: 270px; margin: 0; }
+  .museum .room-poster b { font-size: 52px; }
+  .museum .room-card-top { grid-area: status; margin-bottom: 8px; }
+  .museum .room-years { grid-area: years; margin-bottom: 6px; }
+  .museum .room-name { grid-area: title; margin-bottom: 10px; font-size: 24px; }
+  .museum .room-summary { grid-area: summary; margin-bottom: 14px; }
+  .museum .room-enter { grid-area: enter; margin-top: 0; }
+  .museum .room-foot .btn { margin-left: 0; }
+}
+
+/* 넓은 태블릿: 한 자료 카드 안에서 사진과 설명을 나란히 보고 작성한다. */
+@media (min-width: 960px) and (max-width: 1366px) {
+  .museum .card-body { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+  .museum .artifact-plate { min-width: 0; margin-top: 0; }
+  .museum .artifact-frame { align-self: start; }
+}
+@media (any-pointer: coarse) {
+  .museum .room-card:hover, .museum .room-card:focus-visible { transform: none; }
+  .museum .room-card:hover .arrow { transform: none; }
+  .museum .room-card:active { background: var(--c-glow-soft); }
+  .museum .dz-hint-mouse { display: none; }
+  .museum .dz-hint-touch { display: block; }
+}
+/* 분할 화면에서도 입력 크기와 터치 영역을 유지한다. */
+@media (max-width: 700px) and (any-pointer: coarse) {
+  .museum .visitor-info { flex-basis: 100%; }
+  .museum .visitor-bar-inner { justify-content: flex-start; }
+  .museum .visitor-pdf, .museum .visitor-edit, .museum .visitor-logout { padding-inline: 10px; }
+  .museum .field-input { scroll-margin-top: 200px; }
+  .museum .section[id], .museum .hero[id] { scroll-margin-top: 200px; }
+}
+@media (max-height: 700px) {
+  .museum .gate { align-items: start; }
+  .museum .gate-card { margin-block: 0; }
+}

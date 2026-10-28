@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>근현대 전시전 기획하기 | 2026학년도 2학기 한국사2 수행평가</title>
+<meta name="description" content="근현대 전시전 기획하기 (한국사2 2학기 수행평가) — 세 전시실 가운데 하나를 골라 유물·사건 자료 세 점과 선택 이유를 담아 전시를 기획합니다.">
+<meta name="author" content="이수훈 (고운고등학교)">
+<!-- © 2026 이수훈(고운고등학교). All rights reserved. -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231c2027'/><path d='M16 5l8 11-8 11-8-11z' fill='%23d6b03f'/></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<!-- 큰 제목용 명조 + 폰트를 못 받았을 때를 대비한 고딕 -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+<!-- 화면 글자 기본 서체 (받지 못하면 아이패드 기본 고딕으로 떨어집니다) -->
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/museum.css?v=20261002-8" media="screen">
+<link rel="stylesheet" href="assets/css/tablet.css?v=20261002-1" media="screen">
+
+<script>
+  // 전시실은 눌러서 들어가는 구조다. 자바스크립트가 있을 때만 화면을 나눈다.
+  document.documentElement.classList.add('has-js');
+
+  // 학번·이름을 넣기 전에는 본문이 잠깐이라도 비치지 않도록 미리 잠근다
+  try {
+    if (!localStorage.getItem('museum-visitor')) {
+      document.documentElement.classList.add('is-locked');
+    }
+  } catch (e) { /* 저장소를 쓸 수 없는 환경에서는 잠그지 않는다 */ }
+</script>
+</head>
+<body class="museum">
+
+<a class="skip-link" href="#main">본문 바로가기</a>
+
+<!-- ===== 헤더 ===== -->
+<header class="site-header">
+
+  <!-- 기획자 표시줄 — 입장한 뒤에만 보입니다 -->
+  <div class="visitor-bar" data-visitor-bar hidden>
+    <div class="wrap visitor-bar-inner">
+      <p class="visitor-info">
+        <span class="visitor-label">기획자</span>
+        <span data-visitor-text></span>
+      </p>
+      <button class="visitor-pdf" type="button" data-export-pdf>PDF로 저장</button>
+      <button class="visitor-edit" type="button" data-visitor-edit>학번·이름 수정</button>
+      <button class="visitor-logout" type="button" data-visitor-logout>로그아웃</button>
+    </div>
+  </div>
+
+  <div class="wrap header-inner">
+    <a class="brand" href="#lobby">
+      <span class="brand-mark" aria-hidden="true">史</span>
+      근현대 전시전 기획하기
+    </a>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="메뉴 열기">
+      <span></span>
+    </button>
+
+    <nav class="site-nav" id="site-nav" aria-label="주요 메뉴">
+      <ul class="nav-list">
+        <li><a href="#lobby">전시관 로비</a></li>
+        <li><a href="#rooms">전시실 고르기</a></li>
+        <li><a href="#export">제출하기</a></li>
+        <li><a href="guide.html?v=20261002-2">사용 안내</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- =====================================================
+       로비 — 전시관 입구. 여기서 전시실을 골라 들어갑니다.
+       ===================================================== -->
+  <div class="view is-active" data-view="lobby" id="lobby">
+
+    <!-- ===== 타이틀 (첫 화면에 방법·전시실까지 함께 보이도록 낮게 잡는다) ===== -->
+    <section class="hero is-compact" id="top">
+      <div class="wrap hero-layout">
+        <div class="hero-copy">
+        <p class="hero-period">
+          <span class="tag-badge">2026학년도 2학기 · 한국사2 수행평가</span>
+        </p>
+
+        <p class="hero-kicker">기록을 모아, 시대를 전시하다.</p>
+        <h1 class="hero-title">근현대<br><span>전시전 기획하기</span></h1>
+
+        <p class="hero-desc">
+          세 전시실 가운데 한 곳을 골라, 그 시대를 보여 줄 자료 세 점으로 나만의 전시를 기획합니다.
+        </p>
+        <a class="hero-link" href="#rooms">전시실 둘러보기 <span aria-hidden="true">↗</span></a>
+        </div>
+        <figure class="hero-art" aria-hidden="true">
+          <img src="assets/images/exhibition-paper.png" alt="" width="1024" height="1024" fetchpriority="high">
+          <figcaption><span>기억의 층, 시간의 기록</span><span>1910 — 오늘</span></figcaption>
+        </figure>
+        <div class="hero-edition"><span>한국 근현대사 · 학생 기획 전시</span><span>세 개의 시대, 나만의 시선.</span></div>
+      </div>
+    </section>
+
+    <!-- ===== 수행평가 방법 (한눈에) ===== -->
+    <section class="section is-tight" id="guide">
+      <div class="wrap">
+        <div class="section-head is-row">
+          <h2 class="section-title"><span class="section-index">01 / 기획 안내</span>이렇게 기획합니다</h2>
+        </div>
+
+        <ol class="flow">
+          <li class="flow-step">
+            <h3 class="flow-title"><span class="flow-no">01</span>전시실 고르기</h3>
+            <p class="flow-text">세 곳 중 <strong>한 곳</strong>만 고르고, 고른 이유를 적습니다.</p>
+          </li>
+          <li class="flow-step">
+            <h3 class="flow-title"><span class="flow-no">02</span>자료 세 점 정하기</h3>
+            <p class="flow-text"><strong>유물·문화재</strong>나 <strong>사건 사진</strong>으로 <strong>세 점</strong>을 고릅니다.</p>
+          </li>
+          <li class="flow-step">
+            <h3 class="flow-title"><span class="flow-no">03</span>사진 넣고 설명 쓰기</h3>
+            <p class="flow-text">액자에 사진을 넣고 아래 <strong>두 칸</strong>을 채웁니다.</p>
+          </li>
+          <li class="flow-step">
+            <h3 class="flow-title"><span class="flow-no">04</span>PDF로 제출</h3>
+            <p class="flow-text"><strong>PDF로 저장</strong>해 구글 클래스룸에 냅니다.</p>
+          </li>
+        </ol>
+
+        <div class="flow-sum">
+          <p class="flow-sum-label">완성 기준</p>
+          <ul class="flow-chips">
+            <li>전시실 <b>1곳</b></li>
+            <li>선택 이유 <b>1편</b></li>
+            <li>자료 <b>3점</b></li>
+            <li>사진 <b>3장</b></li>
+            <li class="is-goal">제출 <b>PDF 1개</b></li>
+          </ul>
+          <p class="flow-sum-note">※ 처음부터 끝까지 같은 기기에서 작업하세요.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 전시실 고르기 ===== -->
+    <section class="section is-tight" id="rooms">
+      <div class="wrap">
+        <div class="section-head is-row">
+          <h2 class="section-title"><span class="section-index">02 / 전시실</span>어떤 시대를 담을까요?</h2>
+          <p class="section-note" data-room-pick-note>한 곳만 고를 수 있습니다</p>
+        </div>
+
+        <div class="room-grid" data-room-grid>
+
+          <a class="room-card theme-room1" href="#room1" data-room-card="room1">
+            <div class="room-poster" aria-hidden="true"><span>첫 번째 전시실</span><b>저항</b><small>잃어버린 나라, 꺾이지 않은 마음</small></div>
+            <span class="room-card-top">
+              <span class="room-no">01<span class="room-selection">✓ 선택한 전시실</span></span>
+              <span class="room-status" data-room-status="room1">미선택</span>
+            </span>
+            <p class="room-years">1910 — 1945</p>
+            <h3 class="room-name">빼앗긴 들에도<br>봄은 오는가</h3>
+            <p class="room-summary">
+              국권 침탈과 일제강점기. 억압 속에서도 우리 것을 지키려 했던 저항의 흔적.
+            </p>
+            <span class="room-enter"><span data-room-enter-text>제1전시실 선택하기</span> <span class="arrow" aria-hidden="true">→</span></span>
+          </a>
+
+          <a class="room-card theme-room2" href="#room2" data-room-card="room2">
+            <div class="room-poster" aria-hidden="true"><span>두 번째 전시실</span><b>재건</b><small>되찾은 빛, 다시 세우는 나라</small></div>
+            <span class="room-card-top">
+              <span class="room-no">02<span class="room-selection">✓ 선택한 전시실</span></span>
+              <span class="room-status" data-room-status="room2">미선택</span>
+            </span>
+            <p class="room-years">1945 — 1960</p>
+            <h3 class="room-name">광복, 그리고<br>다시 갈라진 땅</h3>
+            <p class="room-summary">
+              해방과 분단, 6·25 전쟁과 재건. 새 나라를 세우려 했던 시간의 기록.
+            </p>
+            <span class="room-enter"><span data-room-enter-text>제2전시실 선택하기</span> <span class="arrow" aria-hidden="true">→</span></span>
+          </a>
+
+          <a class="room-card theme-room3" href="#room3" data-room-card="room3">
+            <div class="room-poster" aria-hidden="true"><span>세 번째 전시실</span><b>변화</b><small>성장의 발걸음, 민주주의의 목소리</small></div>
+            <span class="room-card-top">
+              <span class="room-no">03<span class="room-selection">✓ 선택한 전시실</span></span>
+              <span class="room-status" data-room-status="room3">미선택</span>
+            </span>
+            <p class="room-years">1960 — 현재</p>
+            <h3 class="room-name">산업화와 민주화,<br>오늘의 우리</h3>
+            <p class="room-summary">
+              경제 성장과 민주주의를 향한 열망이 교차한 시대, 그리고 오늘의 우리.
+            </p>
+            <span class="room-enter"><span data-room-enter-text>제3전시실 선택하기</span> <span class="arrow" aria-hidden="true">→</span></span>
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 제출 ===== -->
+    <section class="section is-tight" id="export">
+      <div class="wrap">
+        <h2 class="submit-title"><span class="section-index">03 / 전시 완성</span>나의 전시를 한 권의 도록으로</h2>
+
+        <div class="submit-box">
+          <button class="btn btn-primary" type="button" data-export-pdf>
+            PDF 파일로 저장
+          </button>
+          <p class="submit-note">
+            저장한 파일을 <strong>구글 클래스룸</strong>에 제출하세요.
+          </p>
+          <p class="export-status" data-export-status role="status"></p>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /로비 -->
+
+  <!-- =====================================================
+       제1전시실
+       ===================================================== -->
+  <section class="view section room-section theme-room1" data-view="room1" id="room1">
+    <div class="wrap">
+
+      <nav class="room-switch" aria-label="전시실 이동">
+        <a class="room-switch-home" href="#lobby"><span aria-hidden="true">←</span> 로비</a>
+        <span class="room-switch-list">
+          <span class="is-current">제1전시실 · 선택됨</span>
+        </span>
+      </nav>
+
+      <header class="room-head">
+        <p class="eyebrow">1910 — 1945</p>
+        <h2 class="room-heading">빼앗긴 들에도 <span class="accent">봄</span>은 오는가</h2>
+        <p class="lead">
+          우리말과 역사, 이름마저 지워지려 했던 시기입니다.
+          그 억압과 저항을 가장 잘 보여 주는 자료를 세 점 골라 보세요.
+        </p>
+      </header>
+
+      <div class="room-reason">
+        <label class="field">
+          <span class="field-label">
+            이 전시실을 선택한 이유
+          </span>
+          <textarea class="field-input" data-room-reason rows="3"
+            placeholder="왜 이 전시실을 골랐는지 자신의 말로 적어 주세요."></textarea>
+        </label>
+      </div>
+
+      <div class="exhibit-toolbar">
+        <div class="toolbar-add">
+          <button class="btn" type="button" data-add-card hidden>
+            <span class="plus" aria-hidden="true">＋</span> 자료 등록
+          </button>
+          <p class="toolbar-hint">
+            <span class="toolbar-hint-icon">TIP</span>
+            <strong>EXHIBIT</strong> 칸을 누르면 카드를 접을 수 있어요.
+          </p>
+        </div>
+        <p class="save-state" data-save-state>자동 저장됩니다</p>
+      </div>
+
+      <div class="artifact-grid" data-exhibit-grid data-room="room1"></div>
+
+      <nav class="room-foot" aria-label="다음 차례">
+        <a class="room-move" href="#lobby"><span aria-hidden="true">←</span> 로비로</a>
+        <a class="room-move room-move-next" href="#export">제출하러 가기 <span aria-hidden="true">→</span></a>
+        <button class="btn" type="button" data-export-pdf>
+          PDF 파일로 저장 <span class="btn-sub">전시실 자료 전체</span>
+        </button>
+      </nav>
+
+      <!-- 저장 결과·오류 안내 — 전시실 안에서 눌러도 여기서 바로 보입니다 -->
+      <p class="export-status" data-export-status role="status"></p>
+
+    </div>
+  </section>
+
+  <!-- =====================================================
+       제2전시실
+       ===================================================== -->
+  <section class="view section room-section theme-room2" data-view="room2" id="room2">
+    <div class="wrap">
+
+      <nav class="room-switch" aria-label="전시실 이동">
+        <a class="room-switch-home" href="#lobby"><span aria-hidden="true">←</span> 로비</a>
+        <span class="room-switch-list">
+          <span class="is-current">제2전시실 · 선택됨</span>
+        </span>
+      </nav>
+
+      <header class="room-head">
+        <p class="eyebrow">1945 — 1960</p>
+        <h2 class="room-heading">광복, 그리고 다시 갈라진 <span class="accent">땅</span></h2>
+        <p class="lead">
+          되찾은 이름 위로 곧 분단의 선이 그어졌습니다.
+          해방과 전쟁, 재건의 짧고 격렬했던 시간을 담은 자료를 세 점 골라 보세요.
+        </p>
+      </header>
+
+      <div class="room-reason">
+        <label class="field">
+          <span class="field-label">
+            이 전시실을 선택한 이유
+          </span>
+          <textarea class="field-input" data-room-reason rows="3"
+            placeholder="왜 이 전시실을 골랐는지 자신의 말로 적어 주세요."></textarea>
+        </label>
+      </div>
+
+      <div class="exhibit-toolbar">
+        <div class="toolbar-add">
+          <button class="btn" type="button" data-add-card hidden>
+            <span class="plus" aria-hidden="true">＋</span> 자료 등록
+          </button>
+          <p class="toolbar-hint">
+            <span class="toolbar-hint-icon">TIP</span>
+            <strong>EXHIBIT</strong> 칸을 누르면 카드를 접을 수 있어요.
+          </p>
+        </div>
+        <p class="save-state" data-save-state>자동 저장됩니다</p>
+      </div>
+
+      <div class="artifact-grid" data-exhibit-grid data-room="room2"></div>
+
+      <nav class="room-foot" aria-label="다음 차례">
+        <a class="room-move" href="#lobby"><span aria-hidden="true">←</span> 로비로</a>
+        <a class="room-move room-move-next" href="#export">제출하러 가기 <span aria-hidden="true">→</span></a>
+        <button class="btn" type="button" data-export-pdf>
+          PDF 파일로 저장 <span class="btn-sub">전시실 자료 전체</span>
+        </button>
+      </nav>
+
+      <!-- 저장 결과·오류 안내 — 전시실 안에서 눌러도 여기서 바로 보입니다 -->
+      <p class="export-status" data-export-status role="status"></p>
+
+    </div>
+  </section>
+
+  <!-- =====================================================
+       제3전시실
+       ===================================================== -->
+  <section class="view section room-section theme-room3" data-view="room3" id="room3">
+    <div class="wrap">
+
+      <nav class="room-switch" aria-label="전시실 이동">
+        <a class="room-switch-home" href="#lobby"><span aria-hidden="true">←</span> 로비</a>
+        <span class="room-switch-list">
+          <span class="is-current">제3전시실 · 선택됨</span>
+        </span>
+      </nav>
+
+      <header class="room-head">
+        <p class="eyebrow">1960 — 현재</p>
+        <h2 class="room-heading">산업화와 민주화, 오늘의 <span class="accent">우리</span></h2>
+        <p class="lead">
+          경제를 일으키려는 힘과 사람답게 살 권리를 요구하는 목소리가 함께 자라난 시대입니다.
+          그 두 흐름이 만든 오늘을 보여 주는 자료를 세 점 골라 보세요.
+        </p>
+      </header>
+
+      <div class="room-reason">
+        <label class="field">
+          <span class="field-label">
+            이 전시실을 선택한 이유
+          </span>
+          <textarea class="field-input" data-room-reason rows="3"
+            placeholder="왜 이 전시실을 골랐는지 자신의 말로 적어 주세요."></textarea>
+        </label>
+      </div>
+
+      <div class="exhibit-toolbar">
+        <div class="toolbar-add">
+          <button class="btn" type="button" data-add-card hidden>
+            <span class="plus" aria-hidden="true">＋</span> 자료 등록
+          </button>
+          <p class="toolbar-hint">
+            <span class="toolbar-hint-icon">TIP</span>
+            <strong>EXHIBIT</strong> 칸을 누르면 카드를 접을 수 있어요.
+          </p>
+        </div>
+        <p class="save-state" data-save-state>자동 저장됩니다</p>
+      </div>
+
+      <div class="artifact-grid" data-exhibit-grid data-room="room3"></div>
+
+      <nav class="room-foot" aria-label="다음 차례">
+        <a class="room-move" href="#lobby"><span aria-hidden="true">←</span> 로비로</a>
+        <a class="room-move room-move-next" href="#export">제출하러 가기 <span aria-hidden="true">→</span></a>
+        <button class="btn" type="button" data-export-pdf>
+          PDF 파일로 저장 <span class="btn-sub">전시실 자료 전체</span>
+        </button>
+      </nav>
+
+      <!-- 저장 결과·오류 안내 — 전시실 안에서 눌러도 여기서 바로 보입니다 -->
+      <p class="export-status" data-export-status role="status"></p>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== 푸터 ===== -->
+<footer class="site-footer">
+  <!-- 메뉴는 위쪽 헤더에 늘 떠 있으므로 여기서는 되풀이하지 않는다 -->
+  <div class="wrap footer-inner">
+    <p class="footer-brand"><span class="brand-mark">◈</span> 근현대 전시전 기획하기</p>
+    <p class="footer-copyright">© 2026 이수훈(고운고등학교). All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- 유물 카드 틀 — JS가 이 틀을 복제해 각 전시실에 카드를 만듭니다 -->
+<template id="tpl-artifact-card">
+  <article class="artifact-card" data-card>
+
+    <!-- 카드 머리 — 접혀 있어도 이 줄만은 항상 보입니다 -->
+    <header class="card-head">
+      <button class="card-toggle" type="button" data-toggle aria-expanded="true">
+        <span class="card-toggle-icon" aria-hidden="true">⌄</span>
+        <span data-index>EXHIBIT 01</span>
+        <span class="card-toggle-label" data-toggle-label>접기</span>
+      </button>
+      <button class="card-remove" type="button" data-remove aria-label="전시 자료 카드 삭제">×</button>
+    </header>
+
+    <div class="card-body" data-card-body>
+
+      <!-- ① 사진 첨부 영역 (클릭 또는 드래그앤드롭) -->
+      <div class="artifact-frame">
+        <div class="artifact-mat">
+          <label class="dropzone" data-dropzone>
+            <input class="file-input" type="file" accept="image/*" data-file>
+            <img class="dz-photo" data-photo alt="첨부한 전시 자료 사진" hidden>
+            <span class="dz-guide">
+              <span class="dz-icon" aria-hidden="true">＋</span>
+              <span class="dz-title">자료 사진 첨부</span>
+              <span class="dz-hint dz-hint-mouse">클릭하거나 이미지를 끌어다 놓으세요</span>
+              <span class="dz-hint dz-hint-touch">눌러서 사진을 고르세요</span>
+            </span>
+          </label>
+          <button class="photo-remove" type="button" data-photo-remove hidden>사진 삭제</button>
+        </div>
+      </div>
+
+      <!-- 전시 라벨 -->
+      <div class="artifact-plate">
+
+        <!-- ② 자료 설명 -->
+        <label class="field">
+          <span class="field-label">
+            자료 설명
+          </span>
+          <textarea class="field-input" data-desc rows="3"
+            placeholder="유물이라면 이름·시기·쓰임새를, 사건 사진이라면 언제·어디서 찍은 장면인지 적어 주세요."></textarea>
+        </label>
+
+        <!-- ③ 역사적 맥락 -->
+        <label class="field">
+          <span class="field-label">
+            역사적 배경과 의미
+          </span>
+          <textarea class="field-input" data-event rows="3"
+            placeholder="어떤 사건과 이어지고, 그 속에서 어떤 의미를 갖는지 적어 주세요."></textarea>
+        </label>
+      </div>
+
+    </div>
+  </article>
+</template>
+
+<dialog class="room-confirm" data-room-confirm aria-labelledby="room-confirm-title" aria-describedby="room-confirm-name room-confirm-note">
+  <form method="dialog">
+    <h2 id="room-confirm-title">이 전시실로 할까요?</h2>
+    <p class="room-confirm-name" id="room-confirm-name" data-room-confirm-name></p>
+    <p class="room-confirm-note" id="room-confirm-note">처음부터 다시 하려면 로그아웃 후 재입장하세요.<br>작성 내용은 삭제됩니다.</p>
+    <div class="room-confirm-actions">
+      <button class="btn" type="submit" value="cancel" autofocus>다시 고르기</button>
+      <button class="btn btn-primary" type="submit" value="select">선택하기</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="assets/js/gate.js"></script>
+<script src="assets/js/main.js?v=20261002-room-choice2"></script>
+<script src="assets/js/exhibit.js"></script>
+<script src="assets/js/export-pdf.js"></script>
+</body>
+</html>
