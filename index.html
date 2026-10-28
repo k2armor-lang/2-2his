@@ -125,8 +125,8 @@
             <p class="flow-text">액자에 사진을 넣고 아래 <strong>두 칸</strong>을 채웁니다.</p>
           </li>
           <li class="flow-step">
-            <h3 class="flow-title"><span class="flow-no">04</span>PDF로 제출</h3>
-            <p class="flow-text"><strong>PDF로 저장</strong>해 구글 클래스룸에 냅니다.</p>
+            <h3 class="flow-title"><span class="flow-no">04</span>선생님께 제출</h3>
+            <p class="flow-text"><strong>선생님께 제출하기</strong>를 누르면 바로 제출됩니다.</p>
           </li>
         </ol>
 
@@ -137,7 +137,7 @@
             <li>선택 이유 <b>1편</b></li>
             <li>자료 <b>3점</b></li>
             <li>사진 <b>3장</b></li>
-            <li class="is-goal">제출 <b>PDF 1개</b></li>
+            <li class="is-goal">제출 <b>1회</b></li>
           </ul>
           <p class="flow-sum-note">※ 처음부터 끝까지 같은 기기에서 작업하세요.</p>
         </div>
@@ -206,12 +206,20 @@
         <h2 class="submit-title"><span class="section-index">03 / 전시 완성</span>나의 전시를 한 권의 도록으로</h2>
 
         <div class="submit-box">
-          <button class="btn btn-primary" type="button" data-export-pdf>
-            PDF 파일로 저장
+          <button class="btn btn-primary" type="button" data-submit>
+            선생님께 제출하기
+          </button>
+          <button class="btn" type="button" data-export-pdf>
+            내 기기에 PDF 저장
           </button>
           <p class="submit-note">
-            저장한 파일을 <strong>구글 클래스룸</strong>에 제출하세요.
+            <strong>제출하기</strong>를 누르면 <b>학번_이름.pdf</b>가 선생님께 바로 전달됩니다.
+            다시 제출하면 마지막 제출본만 남습니다.
           </p>
+          <p class="submit-note" data-submit-last></p>
+          <button class="btn" type="button" data-resubmit hidden>
+            기기에 보관된 제출본 다시 보내기
+          </button>
           <p class="export-status" data-export-status role="status"></p>
         </div>
       </div>
@@ -487,6 +495,8 @@
 <script src="assets/js/gate.js"></script>
 <script src="assets/js/main.js?v=20261002-room-choice2"></script>
 <script src="assets/js/exhibit.js"></script>
-<script src="assets/js/export-pdf.js"></script>
+<script src="assets/js/export-pdf.js?v=20261028-submit"></script>
+<script src="assets/js/submit-config.js?v=20261028"></script>
+<script src="assets/js/submit.js?v=20261028"></script>
 </body>
 </html>

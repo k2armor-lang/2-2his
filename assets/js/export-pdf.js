@@ -235,7 +235,7 @@
     if (!info) return null;
 
     return {
-      no: info.no, years: info.years, title: info.title,
+      id: info.id, no: info.no, years: info.years, title: info.title,
       reason: choice.reason || '',
       items: filled(readJSON('museum-exhibit:' + choice.room))
     };
@@ -370,4 +370,15 @@
     auto.remove();
     root.classList.remove('is-printing');
   });
+
+  /* ---------- submit.js(선생님께 제출하기)와 함께 쓰는 도구 ---------- */
+  window.MuseumCatalog = {
+    visitor: visitor,
+    collectRoom: collectRoom,
+    fileBase: fileBase,
+    notify: function (msg, isError, short, btn) {
+      if (btn) lastButton = btn;
+      notify(msg, isError, short);
+    }
+  };
 })();
