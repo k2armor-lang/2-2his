@@ -1,7 +1,8 @@
 /* =========================================================
    선생님께 제출하기
-   - 학생이 고른 전시실의 글과 사진을 Apps Script 웹 앱(apps-script/Code.gs)으로 보낸다
-   - 웹 앱이 도록 PDF를 만들어 선생님 드라이브에 학번_이름.pdf 로 저장한다
+   - 학생 기기에서 전시실 화면과 같은 모양의 PDF를 만들어 Apps Script 웹 앱(apps-script/Code.gs)으로 보낸다
+   - 웹 앱은 그 PDF를 선생님 드라이브에 학번_이름.pdf 로 저장한다
+     (기기에서 PDF를 못 만들면 글과 사진을 보내고, 웹 앱이 도록 문서를 대신 만든다)
    - 학생은 구글에 로그인할 필요가 없다
    - 보낼 주소는 submit-config.js 의 MUSEUM_SUBMIT_URL
 
@@ -145,7 +146,7 @@
     busy = on;
     allButtons.forEach(function (btn) {
       if (on) {
-        btn.setAttribute('data-label', btn.textContent);
+        if (!btn.hasAttribute('data-label')) btn.setAttribute('data-label', btn.textContent);
         btn.textContent = '제출하는 중…';
       } else if (btn.hasAttribute('data-label')) {
         btn.textContent = btn.getAttribute('data-label');
@@ -211,6 +212,223 @@
       });
   }
 
+  /* =======================================================
+     제출본 PDF — 학생이 보던 전시실 화면 모양 그대로
+     - 전시실 머리말 · 선택 이유 · 자료 카드를 화면과 같은 디자인으로 화면 밖에 다시 그리고
+       html2canvas로 찍어 jsPDF로 A4에 차례로 붙인다
+     - 화면의 글칸은 한 화면 높이에서 멈추지만, 제출본에는 글 전체를 펼쳐 싣는다
+     - 라이브러리를 못 불러오거나 그리다 실패하면 거절(reject)한다
+       → run()이 예전 방식(글과 사진을 보내 Apps Script가 문서를 만드는 방식)으로 보낸다
+     ======================================================= */
+  var LIBS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
+  ];
+  var libsReady = null;
+
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error('불러오기 실패: ' + src)); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function loadLibs() {
+    if (window.html2canvas && window.jspdf) return Promise.resolve();
+    if (!libsReady) {
+      libsReady = Promise.all(LIBS.map(loadScript));
+      libsReady['catch'](function () { libsReady = null; });   // 다음 제출 때 다시 시도한다
+    }
+    return libsReady;
+  }
+
+  function node(tag, cls, txt) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (txt != null) n.textContent = txt;   // 학생 글은 항상 텍스트로만 넣는다
+    return n;
+  }
+
+  function textBox(label, value) {
+    var field = node('div', 'field');
+    field.appendChild(node('span', 'field-label', label));
+    var text = (value || '').trim();
+    field.appendChild(node('div', 'field-input sheet-text' + (text ? '' : ' is-blank'), text || '(작성되지 않음)'));
+    return field;
+  }
+
+  function sheetTop(v, room, at) {
+    var top = node('div', 'sheet-block sheet-top');
+    top.setAttribute('data-sheet-block', '');
+
+    var bar = node('div', 'sheet-bar');
+    var who = node('span', null, '기획자 ');
+    who.appendChild(node('b', null, v.sid + ' · ' + v.name));
+    bar.appendChild(who);
+    bar.appendChild(node('span', null, '제출 ' + at));
+    top.appendChild(bar);
+
+    var brand = node('p', 'sheet-brand');
+    brand.appendChild(node('span', 'sheet-mark', '史'));
+    brand.appendChild(document.createTextNode('근현대 전시전 기획하기'));
+    top.appendChild(brand);
+
+    // 전시실 머리말은 화면의 것을 그대로 옮겨 온다
+    var src = document.querySelector('#' + room.id + ' .room-head');
+    var head = src ? src.cloneNode(true) : node('header', 'room-head');
+    if (!src) {
+      head.appendChild(node('p', 'eyebrow', room.years));
+      head.appendChild(node('h2', 'room-heading', room.title));
+    }
+    head.insertBefore(node('p', 'sheet-room-no', '제' + Number(room.no) + '전시실'), head.firstChild);
+    top.appendChild(head);
+
+    var reason = node('div', 'room-reason');
+    reason.appendChild(textBox('이 전시실을 선택한 이유', room.reason));
+    top.appendChild(reason);
+    return top;
+  }
+
+  function sheetCard(item, i) {
+    var card = node('article', 'artifact-card sheet-block');
+    card.setAttribute('data-sheet-block', '');
+
+    var done = item.photo && (item.desc || '').trim() && (item.event || '').trim();
+    var head = node('header', 'card-head');
+    head.appendChild(node('span', 'sheet-index', 'EXHIBIT ' + ('0' + (i + 1)).slice(-2)));
+    head.appendChild(node('span', 'card-status is-' + (done ? 'done' : 'partial'), done ? '완성 ✓' : '작성 중'));
+    card.appendChild(head);
+
+    var body = node('div', 'card-body');
+    var frame = node('div', 'artifact-frame');
+    var mat = node('div', 'artifact-mat');
+    var box = node('div', 'sheet-photo' + (item.photo ? '' : ' is-empty'));
+    if (item.photo) {
+      var img = document.createElement('img');
+      img.alt = '';
+      img.src = item.photo;
+      box.appendChild(img);
+    } else {
+      box.textContent = '사진 없음';
+    }
+    mat.appendChild(box);
+    frame.appendChild(mat);
+    body.appendChild(frame);
+
+    var plate = node('div', 'artifact-plate');
+    plate.appendChild(textBox('자료 설명', item.desc));
+    plate.appendChild(textBox('역사적 배경과 의미', item.event));
+    body.appendChild(plate);
+
+    card.appendChild(body);
+    return card;
+  }
+
+  // html2canvas는 object-fit을 그리지 못한다 — 사진 크기를 직접 계산해 칸 안에 맞춘다
+  function fitPhotos(sheet) {
+    var imgs = sheet.querySelectorAll('.sheet-photo img');
+    return Promise.all(Array.prototype.map.call(imgs, function (img) {
+      return new Promise(function (resolve) {
+        function fit() {
+          var box = img.parentNode;
+          var s = Math.min(box.clientWidth / img.naturalWidth, box.clientHeight / img.naturalHeight) || 1;
+          img.style.width = Math.round(img.naturalWidth * s) + 'px';
+          img.style.height = Math.round(img.naturalHeight * s) + 'px';
+          resolve();
+        }
+        if (img.complete && img.naturalWidth) fit();
+        else { img.onload = fit; img.onerror = function () { resolve(); }; }
+      });
+    }));
+  }
+
+  function renderPdf(sheet) {
+    var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', compress: true });
+    var M = 10, W = 190, H = 277, GAP = 6;   // A4 210×297mm, 여백 10mm
+    var y = M;
+
+    function paintBg() { pdf.setFillColor(250, 249, 246); pdf.rect(0, 0, 210, 297, 'F'); }   // 전시실 벽 색
+    function newPage() { pdf.addPage(); paintBg(); y = M; }
+    function add(canvas, h) {
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.9), 'JPEG', M, y, W, h);
+      y += h + GAP;
+    }
+
+    // 글줄 한가운데서 쪽이 갈리지 않도록, 자를 자리 위쪽에서 글자가 없는 가로줄을 찾는다
+    function gapAbove(canvas, cut, range) {
+      var w = canvas.width;
+      var data = canvas.getContext('2d').getImageData(0, cut - range, w, range).data;
+      for (var row = range - 1; row >= 0; row--) {
+        var dark = false;
+        for (var x = 0, i = row * w * 4; x < w; x++, i += 4) {
+          if (data[i] + data[i + 1] + data[i + 2] < 480) { dark = true; break; }   // 글자(진한 색)가 있는 줄
+        }
+        if (!dark) return cut - range + row + 1;
+      }
+      return cut;   // 빈 줄이 없으면 원래 자리에서 자른다
+    }
+
+    function put(canvas) {
+      var h = canvas.height * W / canvas.width;
+      if (h <= H - (y - M)) return add(canvas, h);           // 이 쪽 남은 자리에 들어간다
+      if (h <= H) { newPage(); return add(canvas, h); }       // 다음 쪽으로 넘긴다
+      // 한 쪽보다 긴 카드(글이 아주 긴 경우)는 쪽 높이로 나눠 이어 싣는다
+      if (y > M) newPage();
+      var pagePx = Math.floor(H * canvas.width / W);
+      for (var sy = 0, sh; sy < canvas.height; sy += sh) {
+        sh = Math.min(pagePx, canvas.height - sy);
+        if (sy + sh < canvas.height) sh = gapAbove(canvas, sy + sh, Math.floor(pagePx / 4)) - sy;
+        var part = document.createElement('canvas');
+        part.width = canvas.width;
+        part.height = sh;
+        part.getContext('2d').drawImage(canvas, 0, sy, canvas.width, sh, 0, 0, canvas.width, sh);
+        if (sy > 0) newPage();
+        add(part, sh * W / canvas.width);
+      }
+    }
+
+    paintBg();
+    var blocks = Array.prototype.slice.call(sheet.querySelectorAll('[data-sheet-block]'));
+    return blocks.reduce(function (chain, block) {
+      return chain.then(function () {
+        // 아이패드 캔버스 한도(약 1,600만 화소) 안에서 되도록 선명하게
+        var scale = Math.min(2, Math.sqrt(14e6 / Math.max(1, block.offsetWidth * block.offsetHeight)));
+        return window.html2canvas(block, { scale: scale, backgroundColor: '#faf9f6', logging: false });
+      }).then(put);
+    }, Promise.resolve()).then(function () {
+      var n = pdf.getNumberOfPages();
+      for (var i = 1; i <= n; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(8);
+        pdf.setTextColor(150);
+        pdf.text(i + ' / ' + n, 105, 292, { align: 'center' });
+      }
+      return pdf.output('datauristring').replace(/^data:application\/pdf;[^,]*base64,/, 'data:application/pdf;base64,');
+    });
+  }
+
+  function makeSheetPdf(v, room) {
+    return loadLibs().then(function () {
+      var sheet = node('div', 'submit-sheet theme-' + room.id);
+      sheet.setAttribute('aria-hidden', 'true');
+      sheet.appendChild(sheetTop(v, room, nowText().slice(0, 16)));
+      room.items.forEach(function (it, i) { sheet.appendChild(sheetCard(it, i)); });
+      document.body.appendChild(sheet);
+
+      var fonts = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+      return fonts
+        .then(function () { return fitPhotos(sheet); })
+        .then(function () { return renderPdf(sheet); })
+        .then(function (uri) { sheet.remove(); return uri; },
+              function (err) { sheet.remove(); throw err; });
+    });
+  }
+  window.MuseumSubmitSheet = makeSheetPdf;   // 확인용 (콘솔에서 미리 만들어 볼 때)
+
   /* ---------- 지금 화면의 내용으로 제출 ---------- */
   function run(btn) {
     if (busy) return;
@@ -245,21 +463,34 @@
     if (prev) ask += '\n\n⚠ 이미 ' + when(prev.at) + '에 제출했습니다. 지금 내용으로 바뀝니다.';
     if (!window.confirm(ask)) return;
 
+    // 사진도 늘 함께 싣는다 — Apps Script가 PDF를 받으면 사진은 무시하고,
+    // PDF를 못 만들었거나 예전 버전의 Apps Script라면 이 글과 사진으로 문서를 만든다
     var payload = {
       sid: v.sid,
       name: v.name,
       room: room.id,
       reason: room.reason,
       items: room.items.map(function (it) {
-        return { photo: it.photo || '', desc: it.desc || '', event: it.event || '' };
+        return { photo: it.photo || '', hasPhoto: !!it.photo, desc: it.desc || '', event: it.event || '' };
       })
     };
 
-    // 보내기 전에 먼저 기기에 보관한다 — 전송이 실패해도 그대로 남는다
-    var json = JSON.stringify(payload);
-    Object.defineProperty(payload, '__json', { value: json });   // JSON에는 실리지 않는 표식
-    Archive.put(keyOf(v.sid, v.name), { payload: json, savedAt: nowText(), sentAt: null })
-      ['catch'](function () { /* 보관에 실패해도 제출은 계속한다 */ })
+    setBusy(true);
+    api.notify('제출본을 만드는 중입니다. 화면을 닫지 말고 잠시 기다려 주세요.', false, null, btn);
+
+    makeSheetPdf(v, room)
+      .then(function (pdf) {
+        payload.pdf = pdf;   // 전시실 화면 모양 그대로 만든 제출본
+      }, function (err) {
+        if (window.console) console.warn('제출본 PDF를 만들지 못해 글과 사진으로만 보냅니다.', err);
+      })
+      .then(function () {
+        // 보내기 전에 먼저 기기에 보관한다 — 전송이 실패해도 그대로 남는다
+        var json = JSON.stringify(payload);
+        Object.defineProperty(payload, '__json', { value: json });   // JSON에는 실리지 않는 표식
+        return Archive.put(keyOf(v.sid, v.name), { payload: json, savedAt: nowText(), sentAt: null })
+          ['catch'](function () { /* 보관에 실패해도 제출은 계속한다 */ });
+      })
       .then(function () { send(payload, btn); });
   }
 

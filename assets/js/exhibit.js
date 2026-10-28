@@ -166,10 +166,7 @@
     }
 
     /* ---------- textarea 자동 높이 ---------- */
-    function autoGrow(el) {
-      el.style.height = 'auto';
-      el.style.height = el.scrollHeight + 'px';
-    }
+    function autoGrow(el) { window.fitField(el); }   // main.js — 한 화면을 넘으면 칸 안에서 스크롤
 
     /* ---------- 이미지 축소 후 데이터 URL로 변환 ----------
        maxEdge · quality를 받아 두 번째 시도에서 더 세게 줄일 수 있게 한다 */

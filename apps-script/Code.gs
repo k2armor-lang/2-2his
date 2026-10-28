@@ -1,8 +1,9 @@
 /* =========================================================
    근현대 전시전 — 제출 받기 (Google Apps Script 웹 앱)
 
-   학생 사이트의 ‘선생님께 제출하기’ 버튼이 글과 사진을 보내면
-   ① 구글 문서로 도록을 만들어 PDF로 바꾸고
+   학생 사이트의 ‘선생님께 제출하기’ 버튼이 제출본을 보내면
+   ① 학생 기기가 전시실 화면 모양 그대로 만든 PDF(pdf)를 받는다
+      — 그 PDF가 없을 때만 글과 사진으로 구글 문서 도록을 만들어 PDF로 바꾼다
    ② 선생님 드라이브의 제출 폴더에 학번_이름.pdf 로 저장한 뒤
    ③ 같은 폴더의 ‘제출 명단’ 시트에 한 줄을 남긴다.
    같은 학생이 다시 내면 지난 PDF는 휴지통으로 가고 새 PDF만 남는다.
@@ -20,6 +21,7 @@ var TIME_ZONE = 'Asia/Seoul';
 var MAX_ITEMS = 3;
 var MAX_TEXT = 5000;                    // 글칸 하나의 최대 글자 수
 var MAX_PHOTO_CHARS = 4 * 1024 * 1024;  // 사진 한 장(base64 글자 수) 상한
+var MAX_PDF_CHARS = 40 * 1024 * 1024;   // 학생 기기가 만든 제출본 PDF(base64 글자 수) 상한
 
 // 사이트 assets/js/export-pdf.js 의 ROOMS 와 짝을 맞춘다
 var ROOMS = {
@@ -51,8 +53,8 @@ function doPost(e) {
     var base = sub.sid + '_' + sub.name;
     var at = Utilities.formatDate(new Date(), TIME_ZONE, 'yyyy-MM-dd HH:mm:ss');
 
-    // 문서를 만들고 PDF로 바꾸는 일은 오래 걸리므로 잠금 밖에서 한다
-    var pdf = buildPdf(sub, base, at);
+    // 학생 기기가 만든 PDF가 있으면 그대로 쓰고, 없으면 문서를 만든다 (오래 걸리므로 잠금 밖에서)
+    var pdf = sub.pdf ? sub.pdf.setName(base + '.pdf') : buildPdf(sub, base, at);
 
     // 같은 이름 파일 바꾸기와 명단 기록은 한 번에 한 명씩
     var lock = LockService.getScriptLock();
@@ -84,16 +86,31 @@ function validate(d) {
   if (!items.length) throw new Error('등록된 자료가 없습니다.');
   if (items.length > MAX_ITEMS) throw new Error('자료는 ' + MAX_ITEMS + '점까지 낼 수 있습니다.');
 
+  var pdf = d.pdf ? pdfBlob(d.pdf) : null;
+
   return {
     sid: sid,
     name: name,
     room: room,
     reason: text(d.reason),
+    pdf: pdf,
     items: items.map(function (it) {
       it = it || {};
-      return { photo: photo(it.photo), desc: text(it.desc), event: text(it.event) };
+      return {
+        photo: pdf ? null : photo(it.photo),   // PDF에 이미 사진이 들어 있다
+        hasPhoto: !!(it.photo || it.hasPhoto),
+        desc: text(it.desc),
+        event: text(it.event)
+      };
     })
   };
+}
+
+function pdfBlob(v) {
+  var m = /^data:application\/pdf;base64,([A-Za-z0-9+\/=]+)$/.exec(String(v));
+  if (!m) throw new Error('제출본 PDF를 읽지 못했습니다. 다시 제출해 주세요.');
+  if (m[1].length > MAX_PDF_CHARS) throw new Error('제출본 용량이 너무 큽니다. 사진을 조금 작은 것으로 바꿔 주세요.');
+  return Utilities.newBlob(Utilities.base64Decode(m[1]), MimeType.PDF, 'submission.pdf');
 }
 
 function text(v) {
@@ -193,7 +210,7 @@ function store(sub, base, at, pdf) {
     if (String(row[0]) === sub.sid && String(row[1]) === sub.name) count++;
   });
 
-  var photos = sub.items.filter(function (it) { return it.photo; }).length;
+  var photos = sub.items.filter(function (it) { return it.hasPhoto; }).length;
   sheet.appendRow([
     at, sub.sid, sub.name,
     'Room ' + sub.room.no + ' · ' + sub.room.title,

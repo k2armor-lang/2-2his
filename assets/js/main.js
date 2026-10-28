@@ -401,6 +401,26 @@ var RoomChoice = (function () {
   paint();
 })();
 
+/* ---------- 글칸 높이 맞추기 (exhibit.js 도 함께 쓴다) ----------
+   글이 늘면 칸도 함께 늘린다. 다만 한 화면을 넘지 않도록 CSS의 max-height에서 멈추고,
+   그보다 긴 글은 칸 안에서 밀어 올려 본다(is-capped). 제출본에는 글 전체가 펼쳐져 들어간다. */
+window.fitField = function (area) {
+  if (!area || !area.offsetWidth) return;          // 숨어 있으면 잴 수 없다 — 나타날 때 다시 부른다
+  var pageY = window.pageYOffset;
+  var atEnd = area.selectionEnd === area.value.length;
+  var inner = area.scrollTop;
+
+  area.style.height = 'auto';
+  var border = area.offsetHeight - area.clientHeight;   // box-sizing: border-box 라 테두리만큼 더한다
+  area.style.height = (area.scrollHeight + border) + 'px';
+
+  var capped = area.scrollHeight > area.clientHeight + 1;
+  area.classList.toggle('is-capped', capped);
+  // 높이를 잠깐 auto로 돌리면 칸 안·화면 스크롤이 튈 수 있어 제자리로 돌려 둔다
+  area.scrollTop = (capped && atEnd && document.activeElement === area) ? area.scrollHeight : inner;
+  if (window.pageYOffset !== pageY) window.scrollTo(window.pageXOffset, pageY);
+};
+
 /* 화면 회전·분할 화면 변경 시 글줄 수에 맞게 입력칸 높이를 다시 계산한다.
    숨긴 카드에는 손대지 않으며, 학생이 쓴 값과 저장 상태는 바꾸지 않는다. */
 (function () {
@@ -409,12 +429,7 @@ var RoomChoice = (function () {
     if (resizeFrame !== null) window.cancelAnimationFrame(resizeFrame);
     resizeFrame = window.requestAnimationFrame(function () {
       resizeFrame = null;
-      Array.prototype.forEach.call(document.querySelectorAll('textarea.field-input'), function (area) {
-        if (!area.offsetWidth || !area.offsetHeight) return;
-        area.style.height = 'auto';
-        var border = area.offsetHeight - area.clientHeight;
-        area.style.height = (area.scrollHeight + border) + 'px';
-      });
+      Array.prototype.forEach.call(document.querySelectorAll('textarea.field-input'), window.fitField);
     });
   });
 })();
@@ -428,10 +443,7 @@ var RoomChoice = (function () {
   var areas = document.querySelectorAll('[data-room-reason]');
   if (!areas.length) return;
 
-  function autoGrow(el) {
-    el.style.height = 'auto';
-    el.style.height = el.scrollHeight + 'px';
-  }
+  function autoGrow(el) { window.fitField(el); }
 
   Array.prototype.forEach.call(areas, function (ta) {
     var section = ta.closest('[data-view]');
@@ -462,5 +474,6 @@ var RoomChoice = (function () {
 
     load();
     autoGrow(ta);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { autoGrow(ta); });
   });
 })();

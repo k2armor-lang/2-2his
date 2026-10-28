@@ -241,3 +241,41 @@
 .card-status.is-done { border-color: var(--c-gold); background: var(--c-gold); color: #fff; }
 @media (max-width: 480px) { .museum .progress-step { padding: 8px; } .museum .progress-step span { font-size: 14px; } }
 .museum .artifact-card { scroll-margin-top: 140px; }   /* 진행 칸을 눌러 이동할 때 위쪽 고정 머리글에 가리지 않게 */
+
+/* 글칸 — 글이 늘면 함께 커지되, 카드 한 장이 한 화면 안에 들도록 최대 높이에서 멈춘다.
+   그보다 긴 글은 칸 안에서 밀어 올려 보고(is-capped: 아래쪽 그림자로 더 있음을 알린다),
+   선생님 제출본에는 글 전체가 펼쳐져 들어간다. */
+.museum .field-input { overflow-y: hidden; max-height: 45vh; max-height: max(132px, calc((100svh - 640px) / 2)); }
+.museum .room-reason .field-input { max-height: 34vh; max-height: max(132px, 34svh); }
+.museum .field-input.is-capped { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; box-shadow: inset 0 -16px 14px -14px #24252240; }
+.museum .field-input.is-capped:focus { box-shadow: 0 0 0 3px var(--c-glow), inset 0 -16px 14px -14px #24252240; }
+@media (min-width: 960px) and (max-width: 1366px) {
+  /* 넓은 태블릿: 사진 옆에 글칸 두 개가 놓이므로 화면 높이를 둘이 나눠 쓴다 */
+  .museum .card-body .field-input { max-height: 30vh; max-height: max(132px, calc((100svh - 340px) / 2)); }
+}
+
+/* 선생님 제출본 — 전시실 화면과 같은 디자인을 화면 밖에 그려 PDF로 찍는다 (submit.js) */
+.museum .submit-sheet { position: absolute; left: -12000px; top: 0; width: 900px; margin: 0; padding: 0; background: var(--c-bg); color: var(--c-text); font-size: 17px; pointer-events: none; }
+.museum .submit-sheet .sheet-top { padding-bottom: 2px; background: var(--c-bg); }
+.museum .sheet-bar { display: flex; justify-content: space-between; gap: 16px; padding: 12px 22px; background: var(--c-bg-deep); color: var(--c-text-dim); font-size: 14px; }
+.museum .sheet-bar b { color: var(--c-text); font-weight: 600; }
+.museum .sheet-brand { display: flex; align-items: center; gap: 10px; margin: 0; padding: 14px 22px; border-bottom: 1px solid var(--c-line); font-size: 18px; font-weight: 700; color: var(--c-text); }
+.museum .sheet-mark { display: grid; place-items: center; width: 28px; height: 32px; border: 1px solid #9b3e2c; color: #9b3e2c; font: 500 21px/1 var(--f-serif); }
+.museum .submit-sheet .room-head { max-width: none; margin: 0 22px 20px; padding: 22px 0 20px; }
+.museum .sheet-room-no { margin: 0 0 8px; font-size: 14px; font-weight: 700; letter-spacing: .04em; color: var(--c-gold); }
+.museum .submit-sheet .room-heading { font-size: 32px; margin: 10px 0 12px; }
+.museum .submit-sheet .room-head .lead { font-size: 16px; }
+.museum .submit-sheet .room-reason { margin: 0 22px 18px; padding: 20px; }
+.museum .submit-sheet .artifact-card { margin: 0 22px; padding: 22px; }
+.museum .submit-sheet .card-head { justify-content: space-between; padding-right: 0; margin-bottom: 18px; }
+.museum .sheet-index { font-size: 16px; font-weight: 700; letter-spacing: .04em; color: var(--c-gold); }
+.museum .submit-sheet .card-body { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+.museum .submit-sheet .artifact-plate { min-width: 0; margin-top: 0; }
+.museum .sheet-photo { display: flex; align-items: center; justify-content: center; height: 330px; background: var(--c-inset); border: 1px solid var(--c-line); overflow: hidden; }
+.museum .sheet-photo img { display: block; max-width: none; }
+.museum .sheet-photo.is-empty { border-style: dashed; color: var(--c-text-mute); font-size: 15px; }
+.museum .submit-sheet .field + .field { margin-top: 18px; }
+.museum .submit-sheet .field-label { font-size: 16px; }
+.museum .submit-sheet .field-input.sheet-text { height: auto; min-height: 96px; max-height: none; overflow: visible; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 16px; line-height: 1.8; padding: 14px 16px; box-shadow: none; }
+.museum .submit-sheet .field-input.sheet-text.is-blank { color: var(--c-text-mute); }
+.museum .submit-sheet .card-status { display: inline-flex; align-items: center; line-height: 1; padding: 7px 12px; }
