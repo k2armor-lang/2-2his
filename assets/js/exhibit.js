@@ -14,8 +14,8 @@
   var grids = document.querySelectorAll('[data-exhibit-grid]');
   if (!tpl || !grids.length) return;
 
-  var DEFAULT_CARDS = 1;   // 처음 방문 시 기본으로 놓이는 빈 카드 수
-  var MAX_CARDS = 3;       // 한 전시실에 전시할 수 있는 자료 수(＋ 자료 등록으로 채운다)
+  var DEFAULT_CARDS = 3;   // 처음부터 놓이는 카드 수 — 세 장을 다 채워야 한다는 것을 바로 보이게 한다
+  var MAX_CARDS = 3;       // 한 전시실에 전시할 수 있는 자료 수
   var MAX_EDGE = 1200;     // 저장용 이미지 최대 변 길이(px)
   var JPEG_QUALITY = 0.8;
   var RETRY_EDGE = 900;    // 저장 공간이 모자랄 때 한 번 더 줄이는 기준
@@ -32,6 +32,8 @@
     var scope = grid.closest('.room-section') || document;
     var addBtn = scope.querySelector('[data-add-card]');
     var stateEl = scope.querySelector('[data-save-state]');
+    var addLabel = scope.querySelector('[data-add-label]');
+    var progEl = scope.querySelector('[data-exhibit-progress]');
 
     var ROOM_ID = grid.getAttribute('data-room') || 'room';
     var STORAGE_KEY = 'museum-exhibit:' + ROOM_ID;
@@ -48,6 +50,75 @@
           stateEl.textContent = '자동 저장됩니다';
         }, 2000);
       }
+    }
+
+    /* ---------- 진행 상황 (자료 n / 3점 완성) ---------- */
+    function cardState(card) {
+      var parts = [
+        card.querySelector('[data-photo]').getAttribute('src'),
+        card.querySelector('[data-desc]').value.trim(),
+        card.querySelector('[data-event]').value.trim()
+      ];
+      var n = parts.filter(Boolean).length;
+      return n === parts.length ? 'done' : (n ? 'partial' : 'empty');
+    }
+
+    var STATE_TEXT = { done: '완성 ✓', partial: '작성 중', empty: '비어 있음' };
+
+    function updateProgress() {
+      var cards = grid.querySelectorAll('[data-card]');
+      var done = 0;
+
+      Array.prototype.forEach.call(cards, function (card) {
+        var st = cardState(card);
+        if (st === 'done') done++;
+        var badge = card.querySelector('[data-card-status]');
+        if (badge) {
+          badge.textContent = STATE_TEXT[st];
+          badge.className = 'card-status is-' + st;
+        }
+      });
+
+      if (addLabel) addLabel.textContent = '빈 자료 카드 추가 (' + cards.length + ' / ' + MAX_CARDS + '장)';
+      if (!progEl) return;
+
+      progEl.querySelector('[data-progress-count]').textContent = done;
+      progEl.classList.toggle('is-complete', done >= MAX_CARDS);
+      progEl.querySelector('[data-progress-hint]').textContent = done >= MAX_CARDS
+        ? '세 점을 모두 채웠습니다. 아래 ‘제출하러 가기’에서 선생님께 제출하세요.'
+        : '자료 카드 세 장을 모두 채워야 합니다. 카드마다 사진 · 자료 설명 · 역사적 배경과 의미를 채우면 ‘완성’이 됩니다.';
+
+      // 칸을 누르면 그 카드로 이동한다 (빈 자리는 카드를 새로 놓는다)
+      var list = progEl.querySelector('[data-progress-steps]');
+      list.textContent = '';
+      for (var i = 0; i < MAX_CARDS; i++) {
+        var card = cards[i];
+        var st = card ? cardState(card) : 'missing';
+        var li = document.createElement('li');
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'progress-step is-' + st;
+        var no = document.createElement('small');
+        no.textContent = 'EXHIBIT 0' + (i + 1);
+        var label = document.createElement('span');
+        label.textContent = card ? STATE_TEXT[st] : '＋ 카드 놓기';
+        btn.appendChild(no);
+        btn.appendChild(label);
+        btn.setAttribute('aria-label', (i + 1) + '번 자료 — ' + label.textContent);
+        btn.addEventListener('click', card ? goTo.bind(null, card) : function () {
+          if (addBtn) addBtn.click();
+        });
+        li.appendChild(btn);
+        list.appendChild(li);
+      }
+    }
+
+    function goTo(card) {
+      var toggle = card.querySelector('[data-toggle]');
+      if (toggle.getAttribute('aria-expanded') !== 'true') {
+        setExpanded(card, toggle, card.querySelector('[data-card-body]'), true);
+      }
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     /* ---------- 저장 / 불러오기 ---------- */
@@ -77,6 +148,7 @@
 
     // 글을 쓰는 동안에는 잠깐 모았다가 저장한다
     function save() {
+      updateProgress();
       clearTimeout(saveTimer);
       saveTimer = setTimeout(function () {
         if (persist()) setState('저장됨 ✓');
@@ -145,6 +217,7 @@
       photo.hidden = false;
       card.classList.add('has-photo');
       card.querySelector('[data-photo-remove]').hidden = false;
+      updateProgress();
     }
 
     function clearPhoto(card) {
@@ -154,6 +227,7 @@
       card.classList.remove('has-photo');
       card.querySelector('[data-photo-remove]').hidden = true;
       card.querySelector('[data-file]').value = '';
+      updateProgress();
     }
 
     /* 사진 첨부 — 저장까지 확인하고 끝낸다
@@ -305,6 +379,7 @@
       } else if (empty) {
         empty.remove();
       }
+      updateProgress();
     }
 
     function addCard(data, focusIt) {
@@ -338,9 +413,9 @@
     var saved = load();
     if (saved && saved.length) {
       saved.forEach(function (item) { addCard(item, false); });
-    } else {
-      for (var i = 0; i < DEFAULT_CARDS; i++) addCard(null, false);
     }
+    // 예전에 한 장만 놓고 쓰던 학생도 세 장이 보이도록 빈 카드를 채워 둔다
+    for (var i = grid.querySelectorAll('[data-card]').length; i < DEFAULT_CARDS; i++) addCard(null, false);
     renumber();
 
     if (addBtn) {

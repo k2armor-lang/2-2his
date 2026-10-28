@@ -236,13 +236,14 @@
       return;
     }
 
+    // 제출 전에는 항상 한 번 묻는다 — 빈칸·재제출 경고도 같은 창에 함께 싣는다
     var gaps = missing(room);
-    if (gaps.length && !window.confirm('아직 채우지 않은 곳이 있습니다.\n\n· ' + gaps.join('\n· ') +
-                                       '\n\n그래도 제출할까요?')) return;
-
     var prev = lastFor(v);
-    if (prev && !window.confirm('이미 ' + when(prev.at) + '에 제출했습니다.\n' +
-                                '다시 제출하면 지난 제출본은 지금 내용으로 바뀝니다. 계속할까요?')) return;
+    var ask = '정말 선생님께 제출할까요?\n\n' +
+              v.sid + ' ' + v.name + ' · 제' + Number(room.no) + '전시실 · 자료 ' + room.items.length + '점';
+    if (gaps.length) ask += '\n\n⚠ 아직 채우지 않은 곳이 있습니다.\n· ' + gaps.join('\n· ');
+    if (prev) ask += '\n\n⚠ 이미 ' + when(prev.at) + '에 제출했습니다. 지금 내용으로 바뀝니다.';
+    if (!window.confirm(ask)) return;
 
     var payload = {
       sid: v.sid,

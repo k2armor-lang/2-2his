@@ -218,3 +218,26 @@
 @media (prefers-reduced-motion: reduce) {
   .museum .room-card:hover, .museum .room-card:focus-visible { transform: none; }
 }
+
+/* 전시 자료 진행 상황 — 세 장을 채워야 한다는 것을 늘 보이게 한다 */
+.exhibit-progress { margin: 0 0 18px; padding: 16px 18px; background: var(--c-glow-soft); border: 1px solid var(--c-glow-line); border-radius: var(--radius); }
+.exhibit-progress-title { margin: 0 0 12px; font-size: 17px; font-weight: 700; color: var(--c-text); }
+.exhibit-progress-title b { font-size: 24px; color: var(--c-gold); }
+.exhibit-progress-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.museum .progress-step { width: 100%; min-height: 56px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; padding: 8px 12px; background: var(--c-surface); border: 1px dashed var(--c-line); border-radius: var(--radius); box-shadow: none; color: var(--c-text); font: inherit; text-align: left; cursor: pointer; }
+.museum .progress-step small { font-size: 12px; letter-spacing: .08em; color: var(--c-text-mute); }
+.museum .progress-step span { font-size: 15px; font-weight: 600; }
+.museum .progress-step.is-partial { border-style: solid; border-color: var(--c-gold-line); }
+.museum .progress-step.is-partial span { color: var(--c-gold); }
+.museum .progress-step.is-done { border-style: solid; border-color: var(--c-gold); background: var(--c-gold); color: #fff; }
+.museum .progress-step.is-done small { color: #ffffffd9; }
+.museum .progress-step.is-missing span { color: var(--c-gold); }
+.museum .progress-step:focus-visible { outline: 2px solid var(--c-gold); outline-offset: 2px; }
+.exhibit-progress-hint { margin: 10px 0 0; font-size: 14px; line-height: 1.55; color: var(--c-text-dim); }
+.exhibit-progress.is-complete { border-color: var(--c-gold); }
+.exhibit-progress.is-complete .exhibit-progress-hint { color: var(--c-gold); font-weight: 600; }
+.card-status { flex: none; padding: 4px 10px; border: 1px solid var(--c-line); border-radius: 999px; font-size: 13px; font-weight: 600; white-space: nowrap; color: var(--c-text-mute); }
+.card-status.is-partial { border-color: var(--c-gold-line); color: var(--c-gold); }
+.card-status.is-done { border-color: var(--c-gold); background: var(--c-gold); color: #fff; }
+@media (max-width: 480px) { .museum .progress-step { padding: 8px; } .museum .progress-step span { font-size: 14px; } }
+.museum .artifact-card { scroll-margin-top: 140px; }   /* 진행 칸을 눌러 이동할 때 위쪽 고정 머리글에 가리지 않게 */

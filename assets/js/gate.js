@@ -221,7 +221,7 @@
     outBtn.addEventListener('click', function () {
       var ok = window.confirm(
         '로그아웃하면 학번·이름과 선택한 전시실에 작성한 내용이 모두 지워집니다.\n' +
-        '아직 PDF로 저장하지 않았다면 먼저 저장해 주세요.\n\n' +
+        '아직 선생님께 제출하지 않았다면 먼저 제출해 주세요.\n\n' +
         '정말 처음 화면으로 돌아갈까요?');
       if (!ok) return;
 

@@ -17,7 +17,7 @@
 <!-- 화면 글자 기본 서체 (받지 못하면 아이패드 기본 고딕으로 떨어집니다) -->
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="assets/css/style.css">
-<link rel="stylesheet" href="assets/css/museum.css?v=20261002-8" media="screen">
+<link rel="stylesheet" href="assets/css/museum.css?v=20261028-progress" media="screen">
 <link rel="stylesheet" href="assets/css/tablet.css?v=20261002-1" media="screen">
 
 <script>
@@ -46,7 +46,6 @@
         <span class="visitor-label">기획자</span>
         <span data-visitor-text></span>
       </p>
-      <button class="visitor-pdf" type="button" data-export-pdf>PDF로 저장</button>
       <button class="visitor-edit" type="button" data-visitor-edit>학번·이름 수정</button>
       <button class="visitor-logout" type="button" data-visitor-logout>로그아웃</button>
     </div>
@@ -209,12 +208,9 @@
           <button class="btn btn-primary" type="button" data-submit>
             선생님께 제출하기
           </button>
-          <button class="btn" type="button" data-export-pdf>
-            내 기기에 PDF 저장
-          </button>
           <p class="submit-note">
-            <strong>제출하기</strong>를 누르면 <b>학번_이름.pdf</b>가 선생님께 바로 전달됩니다.
-            다시 제출하면 마지막 제출본만 남습니다.
+            <strong>선생님께 제출하기</strong>를 누르면 제출됩니다. 따로 파일을 저장하거나 보낼 필요가 없습니다.
+            고친 뒤 다시 제출하면 마지막 제출본만 남습니다.
           </p>
           <p class="submit-note" data-submit-last></p>
           <button class="btn" type="button" data-resubmit hidden>
@@ -259,10 +255,21 @@
         </label>
       </div>
 
+      <!-- 자료 세 점 진행 상황 — 카드마다 사진·설명·배경을 모두 채우면 ‘완성’ -->
+      <div class="exhibit-progress" data-exhibit-progress>
+        <p class="exhibit-progress-title" role="status">
+          전시 자료 <b data-progress-count>0</b> / 3점 완성
+        </p>
+        <ol class="exhibit-progress-steps" data-progress-steps></ol>
+        <p class="exhibit-progress-hint" data-progress-hint>
+          자료 카드 세 장을 모두 채워야 합니다. 카드마다 사진 · 자료 설명 · 역사적 배경과 의미를 채우면 ‘완성’이 됩니다.
+        </p>
+      </div>
+
       <div class="exhibit-toolbar">
         <div class="toolbar-add">
           <button class="btn" type="button" data-add-card hidden>
-            <span class="plus" aria-hidden="true">＋</span> 자료 등록
+            <span class="plus" aria-hidden="true">＋</span> <span data-add-label>빈 자료 카드 추가</span>
           </button>
           <p class="toolbar-hint">
             <span class="toolbar-hint-icon">TIP</span>
@@ -277,9 +284,6 @@
       <nav class="room-foot" aria-label="다음 차례">
         <a class="room-move" href="#lobby"><span aria-hidden="true">←</span> 로비로</a>
         <a class="room-move room-move-next" href="#export">제출하러 가기 <span aria-hidden="true">→</span></a>
-        <button class="btn" type="button" data-export-pdf>
-          PDF 파일로 저장 <span class="btn-sub">전시실 자료 전체</span>
-        </button>
       </nav>
 
       <!-- 저장 결과·오류 안내 — 전시실 안에서 눌러도 여기서 바로 보입니다 -->
@@ -320,10 +324,21 @@
         </label>
       </div>
 
+      <!-- 자료 세 점 진행 상황 — 카드마다 사진·설명·배경을 모두 채우면 ‘완성’ -->
+      <div class="exhibit-progress" data-exhibit-progress>
+        <p class="exhibit-progress-title" role="status">
+          전시 자료 <b data-progress-count>0</b> / 3점 완성
+        </p>
+        <ol class="exhibit-progress-steps" data-progress-steps></ol>
+        <p class="exhibit-progress-hint" data-progress-hint>
+          자료 카드 세 장을 모두 채워야 합니다. 카드마다 사진 · 자료 설명 · 역사적 배경과 의미를 채우면 ‘완성’이 됩니다.
+        </p>
+      </div>
+
       <div class="exhibit-toolbar">
         <div class="toolbar-add">
           <button class="btn" type="button" data-add-card hidden>
-            <span class="plus" aria-hidden="true">＋</span> 자료 등록
+            <span class="plus" aria-hidden="true">＋</span> <span data-add-label>빈 자료 카드 추가</span>
           </button>
           <p class="toolbar-hint">
             <span class="toolbar-hint-icon">TIP</span>
@@ -338,9 +353,6 @@
       <nav class="room-foot" aria-label="다음 차례">
         <a class="room-move" href="#lobby"><span aria-hidden="true">←</span> 로비로</a>
         <a class="room-move room-move-next" href="#export">제출하러 가기 <span aria-hidden="true">→</span></a>
-        <button class="btn" type="button" data-export-pdf>
-          PDF 파일로 저장 <span class="btn-sub">전시실 자료 전체</span>
-        </button>
       </nav>
 
       <!-- 저장 결과·오류 안내 — 전시실 안에서 눌러도 여기서 바로 보입니다 -->
@@ -381,10 +393,21 @@
         </label>
       </div>
 
+      <!-- 자료 세 점 진행 상황 — 카드마다 사진·설명·배경을 모두 채우면 ‘완성’ -->
+      <div class="exhibit-progress" data-exhibit-progress>
+        <p class="exhibit-progress-title" role="status">
+          전시 자료 <b data-progress-count>0</b> / 3점 완성
+        </p>
+        <ol class="exhibit-progress-steps" data-progress-steps></ol>
+        <p class="exhibit-progress-hint" data-progress-hint>
+          자료 카드 세 장을 모두 채워야 합니다. 카드마다 사진 · 자료 설명 · 역사적 배경과 의미를 채우면 ‘완성’이 됩니다.
+        </p>
+      </div>
+
       <div class="exhibit-toolbar">
         <div class="toolbar-add">
           <button class="btn" type="button" data-add-card hidden>
-            <span class="plus" aria-hidden="true">＋</span> 자료 등록
+            <span class="plus" aria-hidden="true">＋</span> <span data-add-label>빈 자료 카드 추가</span>
           </button>
           <p class="toolbar-hint">
             <span class="toolbar-hint-icon">TIP</span>
@@ -399,9 +422,6 @@
       <nav class="room-foot" aria-label="다음 차례">
         <a class="room-move" href="#lobby"><span aria-hidden="true">←</span> 로비로</a>
         <a class="room-move room-move-next" href="#export">제출하러 가기 <span aria-hidden="true">→</span></a>
-        <button class="btn" type="button" data-export-pdf>
-          PDF 파일로 저장 <span class="btn-sub">전시실 자료 전체</span>
-        </button>
       </nav>
 
       <!-- 저장 결과·오류 안내 — 전시실 안에서 눌러도 여기서 바로 보입니다 -->
@@ -432,6 +452,7 @@
         <span data-index>EXHIBIT 01</span>
         <span class="card-toggle-label" data-toggle-label>접기</span>
       </button>
+      <span class="card-status" data-card-status>비어 있음</span>
       <button class="card-remove" type="button" data-remove aria-label="전시 자료 카드 삭제">×</button>
     </header>
 
@@ -492,11 +513,11 @@
   </form>
 </dialog>
 
-<script src="assets/js/gate.js"></script>
+<script src="assets/js/gate.js?v=20261028"></script>
 <script src="assets/js/main.js?v=20261002-room-choice2"></script>
-<script src="assets/js/exhibit.js"></script>
-<script src="assets/js/export-pdf.js?v=20261028-submit"></script>
+<script src="assets/js/exhibit.js?v=20261028-progress"></script>
+<script src="assets/js/export-pdf.js?v=20261028-nopdf"></script>
 <script src="assets/js/submit-config.js?v=20261028-2"></script>
-<script src="assets/js/submit.js?v=20261028"></script>
+<script src="assets/js/submit.js?v=20261028-confirm"></script>
 </body>
 </html>

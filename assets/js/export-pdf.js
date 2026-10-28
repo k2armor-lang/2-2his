@@ -9,8 +9,8 @@
 (function () {
   'use strict';
 
+  // 화면에서 PDF 저장 버튼은 뺐지만, 제출(submit.js)이 이 파일의 도구를 쓰므로 멈추지 않는다
   var buttons = document.querySelectorAll('[data-export-pdf]');
-  if (!buttons.length) return;
 
   var root = document.documentElement;
 
