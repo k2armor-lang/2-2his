@@ -118,7 +118,9 @@ function buildPdf(sub, base, at) {
 
   body.setMarginTop(54).setMarginBottom(54).setMarginLeft(60).setMarginRight(60);
 
-  body.getParagraphs()[0].setText('EXHIBITION CATALOGUE').editAsText().setFontSize(9).setForegroundColor('#8a6d1f');
+  var head = body.getParagraphs()[0];   // setText()는 값을 돌려주지 않아 이어 쓰지 않는다
+  head.setText('EXHIBITION CATALOGUE');
+  head.editAsText().setFontSize(9).setForegroundColor('#8a6d1f');
   body.appendParagraph('근현대 전시전 기획하기').setHeading(H.TITLE);
   body.appendParagraph('2026학년도 2학기 · 한국사2 수행평가').setHeading(H.SUBTITLE);
 
@@ -131,7 +133,10 @@ function buildPdf(sub, base, at) {
   ]);
   meta.setBorderColor('#cccccc');
   for (var r = 0; r < meta.getNumRows(); r++) {
-    meta.getCell(r, 0).setWidth(90).setBackgroundColor('#f3f1ec').editAsText().setBold(true);
+    var cell = meta.getCell(r, 0);
+    cell.setWidth(90);
+    cell.setBackgroundColor('#f3f1ec');
+    cell.editAsText().setBold(true);
   }
 
   body.appendParagraph('이 전시실을 선택한 이유').setHeading(H.HEADING2);
